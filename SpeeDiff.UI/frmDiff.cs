@@ -17,7 +17,7 @@ namespace CoyneSolutions.SpeeDiff
 {
     public partial class frmDiff : Form
     {
-        private SvnRevisionProvider svnRevisionProvider;
+        private IRevisionProvider revisionProvider;
 
         public frmDiff()
         {
@@ -47,15 +47,15 @@ namespace CoyneSolutions.SpeeDiff
 
         private async void frmDiff_Load(object sender, EventArgs e)
         {
-            svnRevisionProvider = new SvnRevisionProvider();
-            svnRevisionProvider.RevisionLoaded += (s, args) =>
+            revisionProvider = RevisionProvider.GetRevisionProvider(Environment.GetCommandLineArgs()[1]);
+            revisionProvider.RevisionLoaded += (s, args) =>
             {
                 Invoke(new Action(() =>
                 {
                     lvwRevisions.Items.Add(new ListViewItem(new[] {args.Revision.RevisionId, args.Revision.RevisionTime.ToString(), args.Revision.Author, args.Revision.Message}));
                 }));
             };
-            await svnRevisionProvider.Initialize(Environment.GetCommandLineArgs()[1]);
+            await revisionProvider.Initialize();
         }
 
         private async void lvwRevisions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -89,8 +89,8 @@ namespace CoyneSolutions.SpeeDiff
                 Invoke(new Action<int,int>(ShowRevisions), leftIndex, rightIndex);
                 return;
             }
-            var left = svnRevisionProvider.Revisions[leftIndex].GetContent();
-            var right = svnRevisionProvider.Revisions[rightIndex].GetContent();
+            var left = revisionProvider.Revisions[leftIndex].GetContent();
+            var right = revisionProvider.Revisions[rightIndex].GetContent();
             var builder = new SideBySideDiffBuilder(new Differ());
             var model = builder.BuildDiffModel(left, right);
             ModelToTextBox(model.OldText, rtbLeft);

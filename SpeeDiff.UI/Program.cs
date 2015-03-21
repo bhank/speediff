@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Test with bad path
+// Test with UTF8 (need to pass it to streamreader ctor?)
+
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,14 +31,14 @@ namespace speediff
 
         private static void Test1()
         {
-            var svnRevisionProvider = new SvnRevisionProvider();
-            svnRevisionProvider.RevisionLoaded += (sender, args) => { Console.WriteLine(args.Revision);};
-            Task.WaitAll(svnRevisionProvider.Initialize(Environment.GetCommandLineArgs()[1]));
+            var revisionProvider = RevisionProvider.GetRevisionProvider(Environment.GetCommandLineArgs()[1]);
+            revisionProvider.RevisionLoaded += (sender, args) => Console.WriteLine(args.Revision);
+            Task.WaitAll(revisionProvider.Initialize());
 
-            var currentRevisionIndex = svnRevisionProvider.Revisions.Count - 1;
+            var currentRevisionIndex = revisionProvider.Revisions.Count - 1;
             while(true)
             {
-                CompareWithPreviousRevision(svnRevisionProvider.Revisions, currentRevisionIndex);
+                CompareWithPreviousRevision(revisionProvider.Revisions, currentRevisionIndex);
                 while (true)
                 {
                     var key = Console.ReadKey(true);
@@ -53,7 +56,7 @@ namespace speediff
                     }
                     if (key.Key == ConsoleKey.RightArrow)
                     {
-                        if (currentRevisionIndex < svnRevisionProvider.Revisions.Count - 1)
+                        if (currentRevisionIndex < revisionProvider.Revisions.Count - 1)
                         {
                             currentRevisionIndex++;
                             break;
