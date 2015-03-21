@@ -19,7 +19,7 @@ namespace CoyneSolutions.SpeeDiff
         {
             InitializeComponent();
 
-            //rtbLeft.AddPeers(rtbRight, rtbLeftNumbers, rtbRightNumbers);
+            rtbLeft.AddPeers(rtbRight, rtbLeftNumbers, rtbRightNumbers);
 
             foreach (var box in new[] {rtbLeft, rtbRight, rtbLeftNumbers, rtbRightNumbers})
             {
@@ -33,12 +33,12 @@ namespace CoyneSolutions.SpeeDiff
                 box.ScrollBars = RichTextBoxScrollBars.None;
                 box.BackColor = Color.Cyan;
                 box.ReadOnly = true;
-                //box.Enabled = false;
+                //box.Enabled = false;// Disabling the line-number boxes kills their background color.
                 box.Cursor = Cursors.Default;
             }
-            // Disabling the line-number boxes kills their background color... try this instead.
-            rtbLeftNumbers.Enter += (sender, args) => lvwRevisions.Focus();
-            rtbRightNumbers.Enter += (sender, args) => lvwRevisions.Focus();
+            // Disabling the line-number boxes kills their background color... but hooking up these methods makes everything freeze!
+            //rtbLeftNumbers.Enter += FocusListView;
+            //rtbRightNumbers.Enter += FocusListView;
 
             lvwRevisions.FullRowSelect = true;
             lvwRevisions.Columns.AddRange(
@@ -59,6 +59,7 @@ namespace CoyneSolutions.SpeeDiff
             revisionProvider = RevisionProvider.GetRevisionProvider(Environment.GetCommandLineArgs()[1]);
             var revisions = await revisionProvider.LoadRevisions();
             lvwRevisions.Items.AddRange(revisions.Select(r => new ListViewItem(new[] {r.RevisionId, r.RevisionTime.ToString(), r.Author, r.Message})).ToArray());
+            lvwRevisions.Items[0].Selected = true;
         }
 
         private async void lvwRevisions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)

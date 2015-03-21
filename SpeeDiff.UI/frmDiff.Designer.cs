@@ -94,6 +94,7 @@ namespace CoyneSolutions.SpeeDiff
             this.lvwRevisions.TabIndex = 3;
             this.lvwRevisions.UseCompatibleStateImageBehavior = false;
             this.lvwRevisions.View = System.Windows.Forms.View.Details;
+            this.lvwRevisions.HideSelection = false;
             // 
             // rtbLeftNumbers
             // 
