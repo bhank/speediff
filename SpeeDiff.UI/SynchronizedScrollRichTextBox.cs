@@ -12,6 +12,7 @@ namespace CoyneSolutions.SpeeDiff
         // http://stackoverflow.com/questions/1827323/c-synchronize-scroll-position-of-two-richtextboxes
         // http://stackoverflow.com/questions/3322741/synchronizing-multiline-textbox-positions-in-c-sharp
         // https://gist.github.com/jkingry/593809
+        // http://www.codeproject.com/Questions/293542/VB-Net-Custome-RichTextBox-SetScrollPos
 
         private readonly List<SynchronizedScrollRichTextBox> peers = new List<SynchronizedScrollRichTextBox>();
 
@@ -23,58 +24,6 @@ namespace CoyneSolutions.SpeeDiff
                 peer.peers.Add(this);
             }
         }
-
-        #region Bad WndProc way
-
-        //private const int WM_VSCROLL = 0x115;
-        //private const int WM_MOUSEWHEEL = 0x20a;
-        //protected override void WndProc(ref Message msg)
-        //{
-        //    if (msg.Msg == WM_VSCROLL || msg.Msg == WM_MOUSEWHEEL)
-        //    {
-        //        foreach (var peer in peers)
-        //        {
-        //            var peerMessage = Message.Create(peer.Handle, msg.Msg, msg.WParam, msg.LParam);
-        //            peer.DirectWndProc(ref peerMessage);
-        //            Debug.WriteLine("Resending!");
-        //        }
-        //    }
-        //    base.WndProc(ref msg);
-        //}
-
-        //private void DirectWndProc(ref Message msg)
-        //{
-        //    base.WndProc(ref msg);
-        //}
-
-        #endregion Bad WndProc way
-
-        #region Bad GetScrollPos/SetScrollPos way
-
-        //[DllImport("user32.dll", CharSet = CharSet.Auto)]
-        //public static extern int GetScrollPos(IntPtr hWnd, int nBar);
-
-        //[DllImport("user32.dll")]
-        //private static extern int SetScrollPos(IntPtr hWnd, int nBar, int nPos, bool bRedraw);
-
-        //private const int SB_HORZ = 0x0;
-        //private const int SB_VERT = 0x1;
-
-        //public int HorizontalPosition
-        //{
-        //    get { return GetScrollPos((IntPtr)this.Handle, SB_HORZ); }
-        //    set { SetScrollPos((IntPtr)this.Handle, SB_HORZ, value, true); }
-        //}
-
-        //public int VerticalPosition
-        //{
-        //    get { return GetScrollPos((IntPtr)this.Handle, SB_VERT); }
-        //    set { SetScrollPos((IntPtr)this.Handle, SB_VERT, value, true); } // Setting it moves the scroll bar, but doesn't update the content!
-        //}
-
-        #endregion Bad GetScrollPos/SetScrollPos way
-
-        #region Good EM_GETSCROLLPOS/EM_SETSCROLLPOS way
 
         // This way works-- rapidly messing with the scroll wheel doesn't get it out of sync, and it handles keyboard navigation as well as scroll bar
 
@@ -106,12 +55,15 @@ namespace CoyneSolutions.SpeeDiff
         }
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        //static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+        private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, ref POINT lParam); // http://www.pinvoke.net/default.aspx/user32.SendMessage
 
         private const UInt32 WM_USER = 0x0400;
         private const UInt32 EM_GETSCROLLPOS = WM_USER + 221;
         private const UInt32 EM_SETSCROLLPOS = WM_USER + 222;
+
+        private bool settingScrollPosition;
 
         private POINT ScrollPosition
         {
@@ -121,22 +73,55 @@ namespace CoyneSolutions.SpeeDiff
                 SendMessage(Handle, EM_GETSCROLLPOS, IntPtr.Zero, ref point);
                 return point;
             }
-            set { SendMessage(Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref value); }
+            set
+            {
+                settingScrollPosition = true;
+                SendMessage(Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref value);
+                settingScrollPosition = false;
+            }
         }
-
-        #endregion Good EM_GETSCROLLPOS/EM_SETSCROLLPOS way
 
         protected override void OnVScroll(EventArgs e)
         {
             base.OnVScroll(e);
-            var scrollPosition = ScrollPosition;
-            foreach (var peer in peers)
+            if (!settingScrollPosition)
             {
-                //peer.VerticalPosition = VerticalPosition;
-                //peer.Refresh();
-                Debug.WriteLine("{0} setting {1} to {2}, {3}", this.Name, peer.Name, scrollPosition.X, scrollPosition.Y);
-                peer.ScrollPosition = scrollPosition;
+                var scrollPosition = ScrollPosition;
+                foreach (var peer in peers)
+                {
+                    Debug.WriteLine("{0} setting {1} to {2}, {3}", this.Name, peer.Name, scrollPosition.X, scrollPosition.Y);
+                    peer.ScrollPosition = scrollPosition;
+                }
             }
         }
+
+        #region Disable repainting
+
+        // http://stackoverflow.com/questions/192413/how-do-you-prevent-a-richtextbox-from-refreshing-its-display
+
+        private const UInt32 EM_GETEVENTMASK = WM_USER + 59;
+        private const UInt32 EM_SETEVENTMASK = WM_USER + 69;
+        private const UInt32 WM_SETREDRAW          = 0x000B;
+        private IntPtr eventMask;
+
+        public void StopRepaint()
+        {
+            // Stop redrawing:
+            SendMessage(Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+            // Stop sending of events:
+            eventMask = SendMessage(Handle, EM_GETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
+        }
+
+        public void StartRepaint()
+        {
+            // turn on events
+            SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, eventMask);
+            // turn on redrawing
+            SendMessage(Handle, WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
+            // this forces a repaint, which for some reason is necessary in some cases.
+            Invalidate();
+        }
+
+        #endregion
     }
 }

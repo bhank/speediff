@@ -48,6 +48,9 @@ namespace CoyneSolutions.SpeeDiff
             //};
 
             rtbLeft.ReadOnly = rtbRight.ReadOnly = true;
+            rtbLeft.Font = rtbRight.Font = new Font(FontFamily.GenericMonospace, 10);
+            //rtbLeft.ScrollBars = rtbRight.ScrollBars = RichTextBoxScrollBars.Both;
+            rtbLeft.WordWrap = rtbRight.WordWrap = false;
 
             //rtbLeft.vScroll += (msg) =>
             //{
@@ -137,8 +140,10 @@ namespace CoyneSolutions.SpeeDiff
             }
         }
 
-        private static void ModelToTextBox(DiffPaneModel model, RichTextBox textBox)
+        private static void ModelToTextBox(DiffPaneModel model, SynchronizedScrollRichTextBox textBox)
         {
+            textBox.StopRepaint();
+            textBox.Clear();
             foreach (var line in model.Lines)
             {
                 var lineNumber = line.Position.HasValue ? line.Position.ToString() : string.Empty;
@@ -160,6 +165,7 @@ namespace CoyneSolutions.SpeeDiff
                     textBox.AppendText(Environment.NewLine);
                 }
             }
+            textBox.StartRepaint();
         }
 
         private static Color GetPieceColor(ChangeType changeType)
