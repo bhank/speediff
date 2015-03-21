@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -22,6 +23,18 @@ namespace CoyneSolutions.SpeeDiff
             if (addReversePeer)
             {
                 peer.peers.Add(this);
+            }
+        }
+
+        public void AddPeers(params SynchronizedScrollRichTextBox[] newPeers)
+        {
+            peers.AddRange(newPeers);
+            foreach (var peer in newPeers)
+            {
+                var currentPeer = peer;
+                currentPeer.peers.Add(this);
+                var otherPeers = newPeers.Where(p => p != currentPeer).ToList();
+                currentPeer.peers.AddRange(otherPeers);
             }
         }
 

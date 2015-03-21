@@ -1,4 +1,7 @@
-﻿namespace CoyneSolutions.SpeeDiff
+﻿using System.Drawing;
+using System.Windows.Forms;
+
+namespace CoyneSolutions.SpeeDiff
 {
     partial class frmDiff
     {
@@ -29,9 +32,11 @@
         private void InitializeComponent()
         {
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.lvwRevisions = new System.Windows.Forms.ListView();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.lvwRevisions = new System.Windows.Forms.ListView();
+            this.rtbLeftNumbers = new SynchronizedScrollRichTextBox();
             this.rtbLeft = new SynchronizedScrollRichTextBox();
+            this.rtbRightNumbers = new SynchronizedScrollRichTextBox();
             this.rtbRight = new SynchronizedScrollRichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -61,6 +66,25 @@
             this.splitContainer2.SplitterDistance = 413;
             this.splitContainer2.TabIndex = 4;
             // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.rtbLeft);
+            this.splitContainer1.Panel1.Controls.Add(this.rtbLeftNumbers);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.rtbRight);
+            this.splitContainer1.Panel2.Controls.Add(this.rtbRightNumbers);
+            this.splitContainer1.Size = new System.Drawing.Size(944, 413);
+            this.splitContainer1.SplitterDistance = 473;
+            this.splitContainer1.TabIndex = 4;
+            // 
             // lvwRevisions
             // 
             this.lvwRevisions.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -71,39 +95,40 @@
             this.lvwRevisions.UseCompatibleStateImageBehavior = false;
             this.lvwRevisions.View = System.Windows.Forms.View.Details;
             // 
-            // splitContainer1
+            // rtbLeftNumbers
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.rtbLeft);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.rtbRight);
-            this.splitContainer1.Size = new System.Drawing.Size(944, 413);
-            this.splitContainer1.SplitterDistance = 473;
-            this.splitContainer1.TabIndex = 4;
+            this.rtbLeftNumbers.Dock = System.Windows.Forms.DockStyle.Left;
+            this.rtbLeftNumbers.Location = new System.Drawing.Point(0, 0);
+            this.rtbLeftNumbers.Name = "rtbLeftNumbers";
+            this.rtbLeftNumbers.Size = new System.Drawing.Size(71, 413);
+            this.rtbLeftNumbers.TabIndex = 0;
+            this.rtbLeftNumbers.Text = "";
             // 
             // rtbLeft
             // 
             this.rtbLeft.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLeft.Location = new System.Drawing.Point(0, 0);
+            this.rtbLeft.Location = new System.Drawing.Point(71, 0);
             this.rtbLeft.Name = "rtbLeft";
-            this.rtbLeft.Size = new System.Drawing.Size(473, 413);
-            this.rtbLeft.TabIndex = 1;
+            this.rtbLeft.Size = new System.Drawing.Size(402, 413);
+            this.rtbLeft.TabIndex = 2;
             this.rtbLeft.Text = "";
+            // 
+            // rtbRightNumbers
+            // 
+            this.rtbRightNumbers.Dock = System.Windows.Forms.DockStyle.Left;
+            this.rtbRightNumbers.Location = new System.Drawing.Point(0, 0);
+            this.rtbRightNumbers.Name = "rtbRightNumbers";
+            this.rtbRightNumbers.Size = new System.Drawing.Size(78, 413);
+            this.rtbRightNumbers.TabIndex = 0;
+            this.rtbRightNumbers.Text = "";
             // 
             // rtbRight
             // 
             this.rtbRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbRight.Location = new System.Drawing.Point(0, 0);
+            this.rtbRight.Location = new System.Drawing.Point(78, 0);
             this.rtbRight.Name = "rtbRight";
-            this.rtbRight.Size = new System.Drawing.Size(467, 413);
-            this.rtbRight.TabIndex = 2;
+            this.rtbRight.Size = new System.Drawing.Size(389, 413);
+            this.rtbRight.TabIndex = 3;
             this.rtbRight.Text = "";
             // 
             // frmDiff
@@ -130,9 +155,11 @@
 
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private SynchronizedScrollRichTextBox rtbLeft;
-        private SynchronizedScrollRichTextBox rtbRight;
         private System.Windows.Forms.ListView lvwRevisions;
+        private SynchronizedScrollRichTextBox rtbLeft;
+        private SynchronizedScrollRichTextBox rtbLeftNumbers;
+        private SynchronizedScrollRichTextBox rtbRight;
+        private SynchronizedScrollRichTextBox rtbRightNumbers;
 
     }
 }

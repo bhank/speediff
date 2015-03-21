@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DiffPlex;
@@ -18,13 +19,26 @@ namespace CoyneSolutions.SpeeDiff
         {
             InitializeComponent();
 
-            rtbLeft.AddPeer(rtbRight, true);
+            //rtbLeft.AddPeers(rtbRight, rtbLeftNumbers, rtbRightNumbers);
 
-            rtbLeft.ReadOnly = rtbRight.ReadOnly = true;
-            rtbLeft.Font = rtbRight.Font = new Font(FontFamily.GenericMonospace, 10);
-            //rtbLeft.ScrollBars = rtbRight.ScrollBars = RichTextBoxScrollBars.Both;
-            rtbLeft.WordWrap = rtbRight.WordWrap = false;
+            foreach (var box in new[] {rtbLeft, rtbRight, rtbLeftNumbers, rtbRightNumbers})
+            {
+                box.ReadOnly = true;
+                box.Font = new Font(FontFamily.GenericMonospace, 10);
+                box.WordWrap = false;
+            }
 
+            foreach (var box in new[] {rtbLeftNumbers, rtbRightNumbers})
+            {
+                box.ScrollBars = RichTextBoxScrollBars.None;
+                box.BackColor = Color.Cyan;
+                box.ReadOnly = true;
+                //box.Enabled = false;
+                box.Cursor = Cursors.Default;
+            }
+            // Disabling the line-number boxes kills their background color... try this instead.
+            rtbLeftNumbers.Enter += (sender, args) => lvwRevisions.Focus();
+            rtbRightNumbers.Enter += (sender, args) => lvwRevisions.Focus();
 
             lvwRevisions.FullRowSelect = true;
             lvwRevisions.Columns.AddRange(
@@ -82,19 +96,26 @@ namespace CoyneSolutions.SpeeDiff
             var right = revisionProvider.Revisions[rightIndex].GetContent();
             var builder = new SideBySideDiffBuilder(new Differ());
             var model = builder.BuildDiffModel(left, right);
-            ModelToTextBox(model.OldText, rtbLeft);
-            ModelToTextBox(model.NewText, rtbRight);
+            ModelToTextBox(model.OldText, rtbLeft, rtbLeftNumbers);
+            ModelToTextBox(model.NewText, rtbRight, rtbRightNumbers);
         }
 
-        private static void ModelToTextBox(DiffPaneModel model, SynchronizedScrollRichTextBox textBox)
+        private static void ModelToTextBox(DiffPaneModel model, SynchronizedScrollRichTextBox textBox, SynchronizedScrollRichTextBox lineNumbersTextBox)
         {
-            textBox.StopRepaint();
-            textBox.SaveScrollPosition();
-            textBox.Clear();
+            foreach (var box in new[] {textBox, lineNumbersTextBox})
+            {
+                box.StopRepaint();
+                box.SaveScrollPosition();
+                box.Clear();
+            }
+
+            var lineNumbersText = new StringBuilder();
+
             foreach (var line in model.Lines)
             {
                 var lineNumber = line.Position.HasValue ? line.Position.ToString() : string.Empty;
-                AppendText(textBox, lineNumber + "\t" , Color.Cyan);
+                lineNumbersText.AppendLine(lineNumber);
+                //AppendText(lineNumbersTextBox, lineNumber + Environment.NewLine, Color.Empty);
 
                 if (line.Type == ChangeType.Deleted || line.Type == ChangeType.Inserted || line.Type == ChangeType.Unchanged)
                 {
@@ -112,8 +133,14 @@ namespace CoyneSolutions.SpeeDiff
                     textBox.AppendText(Environment.NewLine);
                 }
             }
-            textBox.RestoreScrollPosition();
-            textBox.StartRepaint();
+
+            lineNumbersTextBox.Text = lineNumbersText.ToString();
+
+            foreach (var box in new[] {textBox, lineNumbersTextBox})
+            {
+                box.RestoreScrollPosition();
+                box.StartRepaint();
+            }
         }
 
         private static Color GetPieceColor(ChangeType changeType)
