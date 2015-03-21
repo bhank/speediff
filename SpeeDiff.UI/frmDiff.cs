@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DiffPlex;
@@ -42,14 +43,8 @@ namespace CoyneSolutions.SpeeDiff
         private async void frmDiff_Load(object sender, EventArgs e)
         {
             revisionProvider = RevisionProvider.GetRevisionProvider(Environment.GetCommandLineArgs()[1]);
-            revisionProvider.RevisionLoaded += (s, args) =>
-            {
-                Invoke(new Action(() =>
-                {
-                    lvwRevisions.Items.Add(new ListViewItem(new[] {args.Revision.RevisionId, args.Revision.RevisionTime.ToString(), args.Revision.Author, args.Revision.Message}));
-                }));
-            };
-            await revisionProvider.Initialize();
+            var revisions = await revisionProvider.LoadRevisions();
+            lvwRevisions.Items.AddRange(revisions.Select(r => new ListViewItem(new[] {r.RevisionId, r.RevisionTime.ToString(), r.Author, r.Message})).ToArray());
         }
 
         private async void lvwRevisions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -68,8 +63,8 @@ namespace CoyneSolutions.SpeeDiff
                 }
                 else
                 {
-                    leftIndex = index;
-                    rightIndex = index + 1;
+                    leftIndex = index + 1;
+                    rightIndex = index;
                 }
                 await Task.Run(() => ShowRevisions(leftIndex, rightIndex));
                 Debug.WriteLine("Done awaiting.");

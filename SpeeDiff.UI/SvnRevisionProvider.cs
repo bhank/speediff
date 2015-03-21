@@ -19,7 +19,6 @@ namespace CoyneSolutions.SpeeDiff
         public string Path { get; private set; }
         private SvnClient svnClient = new SvnClient();
         public IList<Revision> Revisions { get; private set; }
-        public event EventHandler<RevisionLoadedEventArgs> RevisionLoaded;
 
         /// <summary>
         /// Quickly check whether this might be an SVN repo.
@@ -35,7 +34,13 @@ namespace CoyneSolutions.SpeeDiff
             await Task.Run(() => LoadRevisions(Path));
         }
 
-        private void LoadRevisions(string path)
+        public async Task<IList<Revision>> LoadRevisions()
+        {
+            await Initialize();
+            return Revisions;
+        }
+
+        private async void LoadRevisions(string path)
         {
             Revisions = new List<Revision>();
             SvnTarget target;
@@ -63,13 +68,7 @@ namespace CoyneSolutions.SpeeDiff
                     revision.Content = reader.ReadToEnd();
                 }
 
-                Revisions.Add(revision);
-
-                var revisionLoaded = RevisionLoaded;
-                if (revisionLoaded != null)
-                {
-                    revisionLoaded(this, new RevisionLoadedEventArgs(revision));
-                }
+                Revisions.Insert(0,revision); // Put them in newest-to-oldest order
             });
         }
     }

@@ -9,6 +9,6 @@ namespace CoyneSolutions.SpeeDiff
         string Path { get; }
         IList<Revision> Revisions { get; }
         Task Initialize();
-        event EventHandler<RevisionLoadedEventArgs> RevisionLoaded;
+        Task<IList<Revision>> LoadRevisions();
     }
 }

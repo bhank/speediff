@@ -16,11 +16,16 @@ namespace CoyneSolutions.SpeeDiff
 
         public string Path { get; private set; }
         public IList<Revision> Revisions { get; private set; }
-        public event EventHandler<RevisionLoadedEventArgs> RevisionLoaded;
 
         public async Task Initialize()
         {
             await Task.Run(() => LoadRevisions(Path));
+        }
+
+        public async Task<IList<Revision>> LoadRevisions()
+        {
+            await Initialize();
+            return Revisions;
         }
 
         private void LoadRevisions(string path)
@@ -68,12 +73,6 @@ namespace CoyneSolutions.SpeeDiff
                     }
 
                     Revisions.Add(revision);
-
-                    var revisionLoaded = RevisionLoaded;
-                    if (revisionLoaded != null)
-                    {
-                        revisionLoaded(this, new RevisionLoadedEventArgs(revision));
-                    }
                 }
             }
         }

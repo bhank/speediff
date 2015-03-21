@@ -38,7 +38,6 @@ namespace speediff
         private static void Test1()
         {
             var revisionProvider = RevisionProvider.GetRevisionProvider(Environment.GetCommandLineArgs()[1]);
-            revisionProvider.RevisionLoaded += (sender, args) => Console.WriteLine(args.Revision);
             Task.WaitAll(revisionProvider.Initialize());
 
             var currentRevisionIndex = revisionProvider.Revisions.Count - 1;
