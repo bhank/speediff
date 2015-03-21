@@ -22,17 +22,43 @@ namespace CoyneSolutions.SpeeDiff
         {
             InitializeComponent();
 
+            rtbLeft.AddPeer(rtbRight, true);
+
+            //rtbLeft.NativeInterface.UpdateUI += (sender, args) => args.
+            //rtbLeft.Scrolling.ScrollPastEnd = true;
+            //rtbRight.Scrolling.ScrollPastEnd = true;
+            //rtbLeft.IsReadOnly = true;
+            //rtbRight.IsReadOnly = true;
+            //rtbLeft.Scroll += (sender, args) => rtbRight.Lines.FirstVisibleIndex = rtbLeft.Lines.FirstVisibleIndex;
+            //rtbRight.Scroll += (sender, args) => rtbLeft.Lines.FirstVisibleIndex = rtbRight.Lines.FirstVisibleIndex;
+            //rtbLeft.Scrolling.
+
+            //SyncScroll(rtbLeft, rtbRight);
+            //rtbLeft.Scroll += (sender, args) => rtbRight.VerticalScroll.Value = rtbLeft.VerticalScroll.Value;
+            //rtbLeft.ScrollbarsUpdated += (sender, args) =>
+            //{
+            //    rtbRight.VerticalScroll.Value = rtbLeft.VerticalScroll.Value;
+            //    rtbRight.Refresh();
+            //};
+            //rtbRight.Scroll += (sender, args) => rtbLeft.VerticalScroll.Value = rtbRight.VerticalScroll.Value;
+            //rtbRight.ScrollbarsUpdated += (sender, args) =>
+            //{
+            //    rtbLeft.VerticalScroll.Value = rtbRight.VerticalScroll.Value;
+            //    rtbLeft.Refresh();
+            //};
+
             rtbLeft.ReadOnly = rtbRight.ReadOnly = true;
-            rtbLeft.vScroll += (msg) =>
-            {
-                msg.HWnd = rtbRight.Handle;
-                rtbRight.PubWndProc(ref msg);
-            };
-            rtbRight.vScroll += (msg) =>
-            {
-                msg.HWnd = rtbLeft.Handle;
-                rtbLeft.PubWndProc(ref msg);
-            };
+
+            //rtbLeft.vScroll += (msg) =>
+            //{
+            //    msg.HWnd = rtbRight.Handle;
+            //    rtbRight.PubWndProc(ref msg);
+            //};
+            //rtbRight.vScroll += (msg) =>
+            //{
+            //    msg.HWnd = rtbLeft.Handle;
+            //    rtbLeft.PubWndProc(ref msg);
+            //};
 
             lvwRevisions.FullRowSelect = true;
             lvwRevisions.Columns.AddRange(
@@ -44,15 +70,28 @@ namespace CoyneSolutions.SpeeDiff
                     new ColumnHeader {Text = "Message", Width = 750},
                 }
                 );
-            //lvwRevisions.Items.Add(new ListViewItem(new[] {"1", "2", "3", "4"}));
-            //lvwRevisions.Items.Add(new ListViewItem(new[] {"1", "2", "3", "4"}));
-            //lvwRevisions.Items.Add(new ListViewItem(new[] {"1", "2", "3", "4"}));
-            //lvwRevisions.Items.Add(new ListViewItem(new[] {"1", "2", "3", "4"}));
-            //lvwRevisions.Items.Add(new ListViewItem(new[] {"1", "2", "3", "4"}));
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
             Load += frmDiff_Load;
             //Test1();
         }
+
+        //private void SyncScroll(FastColoredTextBox left, FastColoredTextBox right)
+        //{
+        //    left.Scroll += (sender, args) =>
+        //    {
+        //        if (args.ScrollOrientation == ScrollOrientation.VerticalScroll)
+        //        {
+        //            right.VerticalScroll.Value = args.NewValue;
+        //        }
+        //    };
+        //    right.Scroll += (sender, args) =>
+        //    {
+        //        if (args.ScrollOrientation == ScrollOrientation.VerticalScroll)
+        //        {
+        //            left.VerticalScroll.Value = args.NewValue;
+        //        }
+        //    };
+        //}
 
         private async void frmDiff_Load(object sender, EventArgs e)
         {
@@ -86,9 +125,12 @@ namespace CoyneSolutions.SpeeDiff
                     right = svnRevisionProvider.Revisions[index].GetContent();
                     left = svnRevisionProvider.Revisions[index + 1].GetContent();
                 }
+
+                //rtbLeft.Text = left;
+                //rtbRight.Text = right;
+
                 var builder = new SideBySideDiffBuilder(new Differ());
                 var model = builder.BuildDiffModel(left, right);
-
                 ModelToTextBox(model.OldText, rtbLeft);
                 ModelToTextBox(model.NewText, rtbRight);
 
@@ -99,7 +141,10 @@ namespace CoyneSolutions.SpeeDiff
         {
             foreach (var line in model.Lines)
             {
-                if (line.SubPieces.Count == 0)
+                var lineNumber = line.Position.HasValue ? line.Position.ToString() : string.Empty;
+                AppendText(textBox, lineNumber + "\t" , Color.Cyan);
+
+                if (line.Type == ChangeType.Deleted || line.Type == ChangeType.Inserted || line.Type == ChangeType.Unchanged)
                 {
                     AppendText(textBox, line.Text + Environment.NewLine, GetPieceColor(line.Type));
                 }
@@ -107,7 +152,7 @@ namespace CoyneSolutions.SpeeDiff
                 {
                     foreach (var piece in line.SubPieces)
                     {
-                        if (piece.Text != null)
+                        if (piece.Type != ChangeType.Imaginary)
                         {
                             AppendText(textBox, piece.Text, GetPieceColor(piece.Type));
                         }
@@ -130,7 +175,7 @@ namespace CoyneSolutions.SpeeDiff
                 case ChangeType.Modified:
                     return Color.Orange;
                 case ChangeType.Unchanged:
-                    return Color.Black;
+                    return Color.Empty;
             }
             return Color.Aqua; // ?
         }
@@ -140,9 +185,14 @@ namespace CoyneSolutions.SpeeDiff
             box.SelectionStart = box.TextLength;
             box.SelectionLength = 0;
 
-            box.SelectionColor = color;
+            if (color != Color.Empty)
+            {
+                //box.SelectionColor = color;
+                box.SelectionBackColor = color;
+            }
             box.AppendText(text);
-            box.SelectionColor = box.ForeColor;
+            //box.SelectionColor = box.ForeColor;
+            box.SelectionBackColor = box.BackColor;
         }
     }
 }
