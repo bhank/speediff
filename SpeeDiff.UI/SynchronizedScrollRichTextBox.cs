@@ -106,20 +106,34 @@ namespace CoyneSolutions.SpeeDiff
 
         public void StopRepaint()
         {
-            // Stop redrawing:
-            SendMessage(Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
-            // Stop sending of events:
-            eventMask = SendMessage(Handle, EM_GETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
+            if (InvokeRequired)
+            {
+                Invoke(new Action(StopRepaint));
+            }
+            else
+            {
+                // Stop redrawing:
+                SendMessage(Handle, WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+                // Stop sending of events:
+                eventMask = SendMessage(Handle, EM_GETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
+            }
         }
 
         public void StartRepaint()
         {
-            // turn on events
-            SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, eventMask);
-            // turn on redrawing
-            SendMessage(Handle, WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
-            // this forces a repaint, which for some reason is necessary in some cases.
-            Invalidate();
+            if (InvokeRequired)
+            {
+                Invoke(new Action(StartRepaint));
+            }
+            else
+            {
+                // turn on events
+                SendMessage(Handle, EM_SETEVENTMASK, IntPtr.Zero, eventMask);
+                // turn on redrawing
+                SendMessage(Handle, WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
+                // this forces a repaint, which for some reason is necessary in some cases.
+                Invalidate();
+            }
         }
 
         #endregion

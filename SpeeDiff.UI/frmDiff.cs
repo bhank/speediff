@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -24,44 +25,11 @@ namespace CoyneSolutions.SpeeDiff
 
             rtbLeft.AddPeer(rtbRight, true);
 
-            //rtbLeft.NativeInterface.UpdateUI += (sender, args) => args.
-            //rtbLeft.Scrolling.ScrollPastEnd = true;
-            //rtbRight.Scrolling.ScrollPastEnd = true;
-            //rtbLeft.IsReadOnly = true;
-            //rtbRight.IsReadOnly = true;
-            //rtbLeft.Scroll += (sender, args) => rtbRight.Lines.FirstVisibleIndex = rtbLeft.Lines.FirstVisibleIndex;
-            //rtbRight.Scroll += (sender, args) => rtbLeft.Lines.FirstVisibleIndex = rtbRight.Lines.FirstVisibleIndex;
-            //rtbLeft.Scrolling.
-
-            //SyncScroll(rtbLeft, rtbRight);
-            //rtbLeft.Scroll += (sender, args) => rtbRight.VerticalScroll.Value = rtbLeft.VerticalScroll.Value;
-            //rtbLeft.ScrollbarsUpdated += (sender, args) =>
-            //{
-            //    rtbRight.VerticalScroll.Value = rtbLeft.VerticalScroll.Value;
-            //    rtbRight.Refresh();
-            //};
-            //rtbRight.Scroll += (sender, args) => rtbLeft.VerticalScroll.Value = rtbRight.VerticalScroll.Value;
-            //rtbRight.ScrollbarsUpdated += (sender, args) =>
-            //{
-            //    rtbLeft.VerticalScroll.Value = rtbRight.VerticalScroll.Value;
-            //    rtbLeft.Refresh();
-            //};
-
             rtbLeft.ReadOnly = rtbRight.ReadOnly = true;
             rtbLeft.Font = rtbRight.Font = new Font(FontFamily.GenericMonospace, 10);
             //rtbLeft.ScrollBars = rtbRight.ScrollBars = RichTextBoxScrollBars.Both;
             rtbLeft.WordWrap = rtbRight.WordWrap = false;
 
-            //rtbLeft.vScroll += (msg) =>
-            //{
-            //    msg.HWnd = rtbRight.Handle;
-            //    rtbRight.PubWndProc(ref msg);
-            //};
-            //rtbRight.vScroll += (msg) =>
-            //{
-            //    msg.HWnd = rtbLeft.Handle;
-            //    rtbLeft.PubWndProc(ref msg);
-            //};
 
             lvwRevisions.FullRowSelect = true;
             lvwRevisions.Columns.AddRange(
@@ -75,26 +43,7 @@ namespace CoyneSolutions.SpeeDiff
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
             Load += frmDiff_Load;
-            //Test1();
         }
-
-        //private void SyncScroll(FastColoredTextBox left, FastColoredTextBox right)
-        //{
-        //    left.Scroll += (sender, args) =>
-        //    {
-        //        if (args.ScrollOrientation == ScrollOrientation.VerticalScroll)
-        //        {
-        //            right.VerticalScroll.Value = args.NewValue;
-        //        }
-        //    };
-        //    right.Scroll += (sender, args) =>
-        //    {
-        //        if (args.ScrollOrientation == ScrollOrientation.VerticalScroll)
-        //        {
-        //            left.VerticalScroll.Value = args.NewValue;
-        //        }
-        //    };
-        //}
 
         private async void frmDiff_Load(object sender, EventArgs e)
         {
@@ -109,7 +58,7 @@ namespace CoyneSolutions.SpeeDiff
             await svnRevisionProvider.Initialize(Environment.GetCommandLineArgs()[1]);
         }
 
-        private void lvwRevisions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private async void lvwRevisions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (e.IsSelected)
             {
@@ -118,26 +67,34 @@ namespace CoyneSolutions.SpeeDiff
                 {
                     index--; // -1 now if it's the only item.
                 }
-                string right, left;
+                int leftIndex, rightIndex;
                 if (index == -1)
                 {
-                    left = right = svnRevisionProvider.Revisions[0].GetContent();
+                    leftIndex = rightIndex = 0;
                 }
                 else
                 {
-                    right = svnRevisionProvider.Revisions[index].GetContent();
-                    left = svnRevisionProvider.Revisions[index + 1].GetContent();
+                    leftIndex = index;
+                    rightIndex = index + 1;
                 }
-
-                //rtbLeft.Text = left;
-                //rtbRight.Text = right;
-
-                var builder = new SideBySideDiffBuilder(new Differ());
-                var model = builder.BuildDiffModel(left, right);
-                ModelToTextBox(model.OldText, rtbLeft);
-                ModelToTextBox(model.NewText, rtbRight);
-
+                await Task.Run(() => ShowRevisions(leftIndex, rightIndex));
+                Debug.WriteLine("Done awaiting.");
             }
+        }
+
+        private void ShowRevisions(int leftIndex, int rightIndex)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<int,int>(ShowRevisions), leftIndex, rightIndex);
+                return;
+            }
+            var left = svnRevisionProvider.Revisions[leftIndex].GetContent();
+            var right = svnRevisionProvider.Revisions[rightIndex].GetContent();
+            var builder = new SideBySideDiffBuilder(new Differ());
+            var model = builder.BuildDiffModel(left, right);
+            ModelToTextBox(model.OldText, rtbLeft);
+            ModelToTextBox(model.NewText, rtbRight);
         }
 
         private static void ModelToTextBox(DiffPaneModel model, SynchronizedScrollRichTextBox textBox)
@@ -193,11 +150,9 @@ namespace CoyneSolutions.SpeeDiff
 
             if (color != Color.Empty)
             {
-                //box.SelectionColor = color;
                 box.SelectionBackColor = color;
             }
             box.AppendText(text);
-            //box.SelectionColor = box.ForeColor;
             box.SelectionBackColor = box.BackColor;
         }
     }
