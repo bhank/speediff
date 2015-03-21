@@ -41,6 +41,9 @@
     <Reference Include="DiffPlex">
       <HintPath>..\packages\DiffPlex.1.2.1\lib\portable-net40+sl50+win+wpa81+wp80\DiffPlex.dll</HintPath>
     </Reference>
+    <Reference Include="FastColoredTextBox">
+      <HintPath>..\packages\FCTB.2.16.1.1\lib\FastColoredTextBox.dll</HintPath>
+    </Reference>
     <Reference Include="LibGit2Sharp">
       <HintPath>..\packages\LibGit2Sharp.0.21.0.176\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
@@ -75,9 +78,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="RevisionProvider.cs" />
     <Compile Include="SvnRevisionProvider.cs" />
+    <Compile Include="SynchronizedScrollFastColoredTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="SynchronizedScrollRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ISynchronizedScrollTextBox.cs" />
     <EmbeddedResource Include="frmDiff.resx">
       <DependentUpon>frmDiff.cs</DependentUpon>
     </EmbeddedResource>

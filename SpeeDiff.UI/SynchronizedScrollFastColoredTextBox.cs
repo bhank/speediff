@@ -5,19 +5,20 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using FastColoredTextBoxNS;
 
 namespace CoyneSolutions.SpeeDiff
 {
-    public class SynchronizedScrollRichTextBox : RichTextBox, ISynchronizedScrollTextBox
+    public class SynchronizedScrollFastColoredTextBox : FastColoredTextBox, ISynchronizedScrollTextBox
     {
-        // http://stackoverflow.com/questions/1827323/c-synchronize-scroll-position-of-two-richtextboxes
-        // http://stackoverflow.com/questions/3322741/synchronizing-multiline-textbox-positions-in-c-sharp
-        // https://gist.github.com/jkingry/593809
-        // http://www.codeproject.com/Questions/293542/VB-Net-Custome-RichTextBox-SetScrollPos
+        public SynchronizedScrollFastColoredTextBox() : base()
+        {
+            ShowLineNumbers = false;
+        }
 
-        private readonly List<SynchronizedScrollRichTextBox> peers = new List<SynchronizedScrollRichTextBox>();
+        private readonly List<SynchronizedScrollFastColoredTextBox> peers = new List<SynchronizedScrollFastColoredTextBox>();
 
-        public void AddPeer(SynchronizedScrollRichTextBox peer, bool addReversePeer = false)
+        public void AddPeer(SynchronizedScrollFastColoredTextBox peer, bool addReversePeer = false)
         {
             peers.Add(peer);
             if (addReversePeer)
@@ -26,7 +27,7 @@ namespace CoyneSolutions.SpeeDiff
             }
         }
 
-        public void AddPeers(params SynchronizedScrollRichTextBox[] newPeers)
+        public void AddPeers(params SynchronizedScrollFastColoredTextBox[] newPeers)
         {
             peers.AddRange(newPeers);
             foreach (var peer in newPeers)
@@ -94,16 +95,21 @@ namespace CoyneSolutions.SpeeDiff
             }
         }
 
-        protected override void OnVScroll(EventArgs e)
+        protected override void OnScroll(ScrollEventArgs se)
         {
-            base.OnVScroll(e);
+            base.OnScroll(se);
             if (!settingScrollPosition)
             {
-                var scrollPosition = ScrollPosition;
+                var x = ScrollPosition;
+                Debug.WriteLine(x.X + ", " + x.Y);
+                
+                var horizontalScroll = HorizontalScroll.Value;
+                var verticalScroll = VerticalScroll.Value;
                 foreach (var peer in peers)
                 {
-                    Debug.WriteLine("{0} setting {1} to {2}, {3}", this.Name, peer.Name, scrollPosition.X, scrollPosition.Y);
-                    peer.ScrollPosition = scrollPosition;
+                    Debug.WriteLine("{0} setting {1} to {2}, {3}", this.Name, peer.Name, horizontalScroll, verticalScroll);
+                    peer.HorizontalScroll.Value = horizontalScroll > peer.HorizontalScroll.Maximum ? peer.HorizontalScroll.Maximum : horizontalScroll;
+                    peer.VerticalScroll.Value = verticalScroll > peer.VerticalScroll.Maximum ? peer.VerticalScroll.Maximum : verticalScroll;
                 }
             }
         }
@@ -120,8 +126,6 @@ namespace CoyneSolutions.SpeeDiff
         }
 
         #region Disable repainting
-
-        // http://stackoverflow.com/questions/192413/how-do-you-prevent-a-richtextbox-from-refreshing-its-display
 
         private const UInt32 EM_GETEVENTMASK = WM_USER + 59;
         private const UInt32 EM_SETEVENTMASK = WM_USER + 69;
@@ -162,24 +166,10 @@ namespace CoyneSolutions.SpeeDiff
 
         #endregion
 
-        public bool ShowScrollBars
-        {
-            get { return this.ScrollBars != RichTextBoxScrollBars.None; }
-            set { ScrollBars = value ? RichTextBoxScrollBars.None : RichTextBoxScrollBars.Both; }
-        }
-
         public void AppendText(string text, Color color)
         {
-            SelectionStart = TextLength;
-            SelectionLength = 0;
-
-            if (color != Color.Empty)
-            {
-                SelectionBackColor = color;
-            }
+            //Text += text;
             AppendText(text);
-            SelectionBackColor = BackColor;
-
         }
     }
 }

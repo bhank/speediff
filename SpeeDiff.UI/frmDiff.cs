@@ -30,7 +30,7 @@ namespace CoyneSolutions.SpeeDiff
 
             foreach (var box in new[] {rtbLeftNumbers, rtbRightNumbers})
             {
-                box.ScrollBars = RichTextBoxScrollBars.None;
+                box.ShowScrollBars = false;
                 box.BackColor = Color.Cyan;
                 box.ReadOnly = true;
                 //box.Enabled = false;// Disabling the line-number boxes kills their background color.
@@ -101,7 +101,7 @@ namespace CoyneSolutions.SpeeDiff
             ModelToTextBox(model.NewText, rtbRight, rtbRightNumbers);
         }
 
-        private static void ModelToTextBox(DiffPaneModel model, SynchronizedScrollRichTextBox textBox, SynchronizedScrollRichTextBox lineNumbersTextBox)
+        private static void ModelToTextBox(DiffPaneModel model, ISynchronizedScrollTextBox textBox, ISynchronizedScrollTextBox lineNumbersTextBox)
         {
             foreach (var box in new[] {textBox, lineNumbersTextBox})
             {
@@ -120,7 +120,7 @@ namespace CoyneSolutions.SpeeDiff
 
                 if (line.Type == ChangeType.Deleted || line.Type == ChangeType.Inserted || line.Type == ChangeType.Unchanged)
                 {
-                    AppendText(textBox, line.Text + Environment.NewLine, GetPieceColor(line.Type));
+                    textBox.AppendText(line.Text + Environment.NewLine, GetPieceColor(line.Type));
                 }
                 else
                 {
@@ -128,7 +128,7 @@ namespace CoyneSolutions.SpeeDiff
                     {
                         if (piece.Type != ChangeType.Imaginary)
                         {
-                            AppendText(textBox, piece.Text, GetPieceColor(piece.Type));
+                            textBox.AppendText(piece.Text, GetPieceColor(piece.Type));
                         }
                     }
                     textBox.AppendText(Environment.NewLine);
@@ -160,19 +160,6 @@ namespace CoyneSolutions.SpeeDiff
                     return Color.Empty;
             }
             return Color.Aqua; // ?
-        }
-
-        private static void AppendText(RichTextBox box, string text, Color color)
-        {
-            box.SelectionStart = box.TextLength;
-            box.SelectionLength = 0;
-
-            if (color != Color.Empty)
-            {
-                box.SelectionBackColor = color;
-            }
-            box.AppendText(text);
-            box.SelectionBackColor = box.BackColor;
         }
     }
 }
