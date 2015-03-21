@@ -95,6 +95,17 @@ namespace CoyneSolutions.SpeeDiff
             }
         }
 
+        private POINT savedScrollPosition;
+        public void SaveScrollPosition()
+        {
+            savedScrollPosition = ScrollPosition;
+        }
+
+        public void RestoreScrollPosition()
+        {
+            ScrollPosition = savedScrollPosition;
+        }
+
         #region Disable repainting
 
         // http://stackoverflow.com/questions/192413/how-do-you-prevent-a-richtextbox-from-refreshing-its-display

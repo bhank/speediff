@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DiffPlex;
@@ -35,10 +29,10 @@ namespace CoyneSolutions.SpeeDiff
             lvwRevisions.Columns.AddRange(
                 new[]
                 {
-                    new ColumnHeader {Text = "Revision", Width = 50},
-                    new ColumnHeader {Text = "Time", Width = 100},
-                    new ColumnHeader {Text = "Author", Width = 50},
-                    new ColumnHeader {Text = "Message", Width = 750},
+                    new ColumnHeader {Text = "Revision", Width = 70},
+                    new ColumnHeader {Text = "Time", Width = 125},
+                    new ColumnHeader {Text = "Author", Width = 75},
+                    new ColumnHeader {Text = "Message", Width = 650},
                 }
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
@@ -100,6 +94,7 @@ namespace CoyneSolutions.SpeeDiff
         private static void ModelToTextBox(DiffPaneModel model, SynchronizedScrollRichTextBox textBox)
         {
             textBox.StopRepaint();
+            textBox.SaveScrollPosition();
             textBox.Clear();
             foreach (var line in model.Lines)
             {
@@ -122,6 +117,7 @@ namespace CoyneSolutions.SpeeDiff
                     textBox.AppendText(Environment.NewLine);
                 }
             }
+            textBox.RestoreScrollPosition();
             textBox.StartRepaint();
         }
 

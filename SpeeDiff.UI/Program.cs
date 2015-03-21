@@ -1,6 +1,12 @@
 ﻿// Test with bad path
 // Test with UTF8 (need to pass it to streamreader ctor?)
-
+// Separate line numbers into different (scroll-synced) textboxes, so you can copy and paste
+// DONE // Maintain scroll position when switching revisions
+// Save sizes of columns in listview, and window size
+// Maybe make listview sortable...
+// Enable flipping through changes with Ctrl-Up and Ctrl-Down
+// Use a faster text box!
+// Maybe use a cool text box with syntax highlighting
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
