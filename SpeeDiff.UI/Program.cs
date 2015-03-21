@@ -1,0 +1,106 @@
+﻿using System;
+using System.CodeDom;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using CoyneSolutions.SpeeDiff;
+
+namespace speediff
+{
+    static class Program
+    {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            //Console.WriteLine("Hey!");
+            //Test1();
+            //Console.ReadKey();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new frmDiff());
+        }
+
+        private static void Test1()
+        {
+            var svnRevisionProvider = new SvnRevisionProvider();
+            svnRevisionProvider.RevisionLoaded += (sender, args) => { Console.WriteLine(args.Revision);};
+            Task.WaitAll(svnRevisionProvider.Initialize(Environment.GetCommandLineArgs()[1]));
+
+            var currentRevisionIndex = svnRevisionProvider.Revisions.Count - 1;
+            while(true)
+            {
+                CompareWithPreviousRevision(svnRevisionProvider.Revisions, currentRevisionIndex);
+                while (true)
+                {
+                    var key = Console.ReadKey(true);
+                    if (key.Key == ConsoleKey.LeftArrow)
+                    {
+                        if (currentRevisionIndex > 0)
+                        {
+                            currentRevisionIndex--;
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Already on first revision!");
+                        }
+                    }
+                    if (key.Key == ConsoleKey.RightArrow)
+                    {
+                        if (currentRevisionIndex < svnRevisionProvider.Revisions.Count - 1)
+                        {
+                            currentRevisionIndex++;
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("Already on last revision!");
+                        }
+                    }
+                    if (key.Key == ConsoleKey.Q) Environment.Exit(0);
+                    Console.Write("?");
+                }
+
+            }
+        }
+
+        private static void CompareWithPreviousRevision(IList<Revision> revisions, int currentRevisionIndex)
+        {
+            if (currentRevisionIndex == 0 || currentRevisionIndex >= revisions.Count) return;
+
+            var leftFile = WriteTempFile(revisions[currentRevisionIndex - 1].GetContent());
+            var rightFile = WriteTempFile(revisions[currentRevisionIndex].GetContent());
+            RunDiff(leftFile, rightFile);
+            File.Delete(leftFile);
+            File.Delete(rightFile);
+        }
+
+        private static void RunDiff(string leftFile, string rightFile)
+        {
+            var process = new Process
+            {
+                StartInfo =
+                    {
+                        FileName = "tortoisemerge.exe",
+                        Arguments = string.Format(@"""{0}"" ""{1}""", leftFile, rightFile),
+                        CreateNoWindow = true
+                    }
+            };
+            process.Start();
+            process.WaitForExit();
+        }
+
+        private static string WriteTempFile(string content)
+        {
+            var fileName = Path.GetTempFileName();
+            File.WriteAllText(fileName, content);
+            return fileName;
+        }
+    }
+}
