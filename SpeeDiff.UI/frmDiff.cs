@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -21,14 +22,14 @@ namespace CoyneSolutions.SpeeDiff
 
             rtbLeft.AddPeers(rtbRight, rtbLeftNumbers, rtbRightNumbers);
 
-            foreach (var box in new[] {rtbLeft, rtbRight, rtbLeftNumbers, rtbRightNumbers})
+            foreach (ISynchronizedScrollTextBox box in new[] {rtbLeft, rtbRight, rtbLeftNumbers, rtbRightNumbers})
             {
                 box.ReadOnly = true;
                 box.Font = new Font(FontFamily.GenericMonospace, 10);
                 box.WordWrap = false;
             }
 
-            foreach (var box in new[] {rtbLeftNumbers, rtbRightNumbers})
+            foreach (ISynchronizedScrollTextBox box in new[] {rtbLeftNumbers, rtbRightNumbers})
             {
                 box.ShowScrollBars = false;
                 box.BackColor = Color.Cyan;
@@ -51,7 +52,39 @@ namespace CoyneSolutions.SpeeDiff
                 }
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
+            lvwRevisions.DoubleClick += (sender, args) => GotoRevision(true);
             Load += frmDiff_Load;
+        }
+
+        private void GotoRevision(bool next)
+        {
+            var position = rtbLeft.SelectionStart;
+            var newPosition = -1;
+
+            foreach (var i in ChangeStartPositions)
+            {
+                if (!next)
+                {
+                    if (i < position)
+                    {
+                        newPosition = i; // for previous only
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else if (i > position)
+                {
+                        newPosition = i;
+                        break;
+                }
+            }
+            if (newPosition > -1)
+            {
+                rtbLeft.SelectionStart = newPosition;
+                rtbLeft.ScrollToCaret();
+            }
         }
 
         private async void frmDiff_Load(object sender, EventArgs e)
@@ -97,12 +130,15 @@ namespace CoyneSolutions.SpeeDiff
             var right = revisionProvider.Revisions[rightIndex].GetContent();
             var builder = new SideBySideDiffBuilder(new Differ());
             var model = builder.BuildDiffModel(left, right);
-            ModelToTextBox(model.OldText, rtbLeft, rtbLeftNumbers);
+            ChangeStartPositions = ModelToTextBox(model.OldText, rtbLeft, rtbLeftNumbers);
+            rtbLeft.SelectionStart = 0;
             ModelToTextBox(model.NewText, rtbRight, rtbRightNumbers);
         }
 
-        private static void ModelToTextBox(DiffPaneModel model, ISynchronizedScrollTextBox textBox, ISynchronizedScrollTextBox lineNumbersTextBox)
+        private static List<int> ModelToTextBox(DiffPaneModel model, ISynchronizedScrollTextBox textBox, ISynchronizedScrollTextBox lineNumbersTextBox)
         {
+            var changeStartPositions = new List<int>();
+
             foreach (var box in new[] {textBox, lineNumbersTextBox})
             {
                 box.StopRepaint();
@@ -111,12 +147,25 @@ namespace CoyneSolutions.SpeeDiff
             }
 
             var lineNumbersText = new StringBuilder();
+            var inChange = false;
 
             foreach (var line in model.Lines)
             {
                 var lineNumber = line.Position.HasValue ? line.Position.ToString() : string.Empty;
                 lineNumbersText.AppendLine(lineNumber);
                 //AppendText(lineNumbersTextBox, lineNumber + Environment.NewLine, Color.Empty);
+                if (line.Type == ChangeType.Unchanged)
+                {
+                    inChange = false;
+                }
+                else
+                {
+                    if (!inChange)
+                    {
+                        inChange = true;
+                        changeStartPositions.Add(textBox.SelectionStart);
+                    }
+                }
 
                 if (line.Type == ChangeType.Deleted || line.Type == ChangeType.Inserted || line.Type == ChangeType.Unchanged)
                 {
@@ -142,6 +191,8 @@ namespace CoyneSolutions.SpeeDiff
                 box.RestoreScrollPosition();
                 box.StartRepaint();
             }
+
+            return changeStartPositions;
         }
 
         private static Color GetPieceColor(ChangeType changeType)
@@ -161,5 +212,7 @@ namespace CoyneSolutions.SpeeDiff
             }
             return Color.Aqua; // ?
         }
+
+        private List<int> ChangeStartPositions { get; set; }
     }
 }

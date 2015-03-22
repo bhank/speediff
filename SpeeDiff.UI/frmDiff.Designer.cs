@@ -34,10 +34,10 @@ namespace CoyneSolutions.SpeeDiff
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lvwRevisions = new System.Windows.Forms.ListView();
-            this.rtbLeftNumbers = new SynchronizedScrollFastColoredTextBox();
-            this.rtbLeft = new SynchronizedScrollFastColoredTextBox();
-            this.rtbRightNumbers = new SynchronizedScrollFastColoredTextBox();
-            this.rtbRight = new SynchronizedScrollFastColoredTextBox();
+            this.rtbLeftNumbers = new SynchronizedScrollRichTextBox();
+            this.rtbLeft = new SynchronizedScrollRichTextBox();
+            this.rtbRightNumbers = new SynchronizedScrollRichTextBox();
+            this.rtbRight = new SynchronizedScrollRichTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -139,7 +139,7 @@ namespace CoyneSolutions.SpeeDiff
             this.ClientSize = new System.Drawing.Size(944, 596);
             this.Controls.Add(this.splitContainer2);
             this.Name = "frmDiff";
-            this.Text = "frmDiff";
+            this.Text = "speediff";
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -157,10 +157,10 @@ namespace CoyneSolutions.SpeeDiff
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ListView lvwRevisions;
-        private SynchronizedScrollFastColoredTextBox rtbLeft;
-        private SynchronizedScrollFastColoredTextBox rtbLeftNumbers;
-        private SynchronizedScrollFastColoredTextBox rtbRight;
-        private SynchronizedScrollFastColoredTextBox rtbRightNumbers;
+        private SynchronizedScrollRichTextBox rtbLeft;
+        private SynchronizedScrollRichTextBox rtbLeftNumbers;
+        private SynchronizedScrollRichTextBox rtbRight;
+        private SynchronizedScrollRichTextBox rtbRightNumbers;
 
     }
 }
