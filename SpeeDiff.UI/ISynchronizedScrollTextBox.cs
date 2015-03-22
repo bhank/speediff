@@ -16,8 +16,8 @@ namespace CoyneSolutions.SpeeDiff
         int SelectionStart { get; set; }
         void StopRepaint();
         void StartRepaint();
-        void SaveScrollPosition();
-        void RestoreScrollPosition();
+        void SavePosition();
+        void RestorePosition();
         void Clear();
     }
 }

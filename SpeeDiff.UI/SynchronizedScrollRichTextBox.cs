@@ -109,13 +109,16 @@ namespace CoyneSolutions.SpeeDiff
         }
 
         private POINT savedScrollPosition;
-        public void SaveScrollPosition()
+        private int savedSelectedLineNumber;
+        public void SavePosition()
         {
             savedScrollPosition = ScrollPosition;
+            savedSelectedLineNumber = GetLineFromCharIndex(SelectionStart);
         }
 
-        public void RestoreScrollPosition()
+        public void RestorePosition()
         {
+            SelectionStart = GetFirstCharIndexFromLine(savedSelectedLineNumber);
             ScrollPosition = savedScrollPosition;
         }
 

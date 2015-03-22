@@ -72,15 +72,17 @@
       <DependentUpon>frmDiff.cs</DependentUpon>
     </Compile>
     <Compile Include="GitRevisionProvider.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RevisionLoadedEventArgs.cs" />
     <Compile Include="Revision.cs" />
     <Compile Include="IRevisionProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RevisionProvider.cs" />
     <Compile Include="SvnRevisionProvider.cs" />
-    <Compile Include="SynchronizedScrollFastColoredTextBox.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="SynchronizedScrollRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -88,11 +90,13 @@
     <EmbeddedResource Include="frmDiff.resx">
       <DependentUpon>frmDiff.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

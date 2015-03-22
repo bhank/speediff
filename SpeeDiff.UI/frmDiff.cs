@@ -52,11 +52,10 @@ namespace CoyneSolutions.SpeeDiff
                 }
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
-            lvwRevisions.DoubleClick += (sender, args) => GotoRevision(true);
             Load += frmDiff_Load;
         }
 
-        private void GotoRevision(bool next)
+        private void GotoChange(bool next)
         {
             var position = rtbLeft.SelectionStart;
             var newPosition = -1;
@@ -87,12 +86,13 @@ namespace CoyneSolutions.SpeeDiff
             }
         }
 
-        private async void frmDiff_Load(object sender, EventArgs e)
+        private void frmDiff_Load(object sender, EventArgs e)
         {
-            revisionProvider = RevisionProvider.GetRevisionProvider(Environment.GetCommandLineArgs()[1]);
-            var revisions = await revisionProvider.LoadRevisions();
-            lvwRevisions.Items.AddRange(revisions.Select(r => new ListViewItem(new[] {r.RevisionId, r.RevisionTime.ToString(), r.Author, r.Message})).ToArray());
-            lvwRevisions.Items[0].Selected = true;
+            if (Environment.GetCommandLineArgs().Length > 1)
+            {
+                txtPath.Text = Environment.GetCommandLineArgs()[1];
+                btnLoad.PerformClick();
+            }
         }
 
         private async void lvwRevisions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
@@ -131,7 +131,6 @@ namespace CoyneSolutions.SpeeDiff
             var builder = new SideBySideDiffBuilder(new Differ());
             var model = builder.BuildDiffModel(left, right);
             ChangeStartPositions = ModelToTextBox(model.OldText, rtbLeft, rtbLeftNumbers);
-            rtbLeft.SelectionStart = 0;
             ModelToTextBox(model.NewText, rtbRight, rtbRightNumbers);
         }
 
@@ -142,7 +141,7 @@ namespace CoyneSolutions.SpeeDiff
             foreach (var box in new[] {textBox, lineNumbersTextBox})
             {
                 box.StopRepaint();
-                box.SaveScrollPosition();
+                box.SavePosition();
                 box.Clear();
             }
 
@@ -188,7 +187,7 @@ namespace CoyneSolutions.SpeeDiff
 
             foreach (var box in new[] {textBox, lineNumbersTextBox})
             {
-                box.RestoreScrollPosition();
+                box.RestorePosition();
                 box.StartRepaint();
             }
 
@@ -214,5 +213,97 @@ namespace CoyneSolutions.SpeeDiff
         }
 
         private List<int> ChangeStartPositions { get; set; }
+
+        // https://social.msdn.microsoft.com/Forums/windows/en-US/2995a8cf-62af-446e-87ab-75045d670942/how-to-assign-a-shortcut-key-to-a-toolstrip-button?forum=winforms
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            switch (keyData)
+            {
+                case Keys.Control | Keys.Up:
+                    btnPreviousChange.PerformClick();
+                    break;
+                case Keys.Control | Keys.Down:
+                    btnNextChange.PerformClick();
+                    break;
+                case Keys.Alt | Keys.Left:
+                    btnDownRevision.PerformClick();
+                    break;
+                case Keys.Alt | Keys.Right:
+                    btnUpRevision.PerformClick();
+                    break;
+                default:
+                    return base.ProcessCmdKey(ref msg, keyData);
+            }
+            return true; // Prevent default handling, like for Ctrl-Up and down in textboxes: http://stackoverflow.com/questions/18366787/stop-a-key-from-firing-an-event-in-c-sharp-using-processcmdkey
+            
+        }
+
+        private void btnPreviousChange_Click(object sender, EventArgs e)
+        {
+            GotoChange(false);
+        }
+
+        private void btnNextChange_Click(object sender, EventArgs e)
+        {
+            GotoChange(true);
+        }
+
+        private async void btnLoad_Click(object sender, EventArgs e)
+        {
+            //lvwRevisions.Clear();
+            lvwRevisions.Items.Clear();
+
+            revisionProvider = RevisionProvider.GetRevisionProvider(txtPath.Text);
+            var revisions = await revisionProvider.LoadRevisions();
+            lvwRevisions.Items.AddRange(revisions.Select(r => new ListViewItem(new[] {r.RevisionId, r.RevisionTime.ToString(), r.Author, r.Message})).ToArray());
+            lvwRevisions.Items[0].Selected = true;
+        }
+
+        private void btnUpRevision_Click(object sender, EventArgs e)
+        {
+            GotoRevision(true);
+        }
+
+        private void btnDownRevision_Click(object sender, EventArgs e)
+        {
+            GotoRevision(false);
+        }
+
+        private void GotoRevision(bool next)
+        {
+            var currentIndex = -1;
+            var newIndex = -1;
+            if (lvwRevisions.SelectedItems.Count == 1)
+            {
+                currentIndex = lvwRevisions.SelectedItems[0].Index;
+            }
+            if (next)
+            {
+                if (currentIndex < 1)
+                {
+                    newIndex = 0;
+                }
+                else if (currentIndex == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    newIndex = currentIndex - 1;
+                }
+            }
+            else
+            {
+                if (currentIndex == lvwRevisions.Items.Count - 1)
+                {
+                    return;
+                }
+                else
+                {
+                    newIndex = currentIndex + 1;
+                }
+            }
+            lvwRevisions.Items[newIndex].Selected = true;
+        }
     }
 }
