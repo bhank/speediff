@@ -33,13 +33,6 @@ namespace CoyneSolutions.SpeeDiff
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDiff));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.rtbLeft = new SynchronizedScrollRichTextBox();
-            this.rtbLeftNumbers = new SynchronizedScrollRichTextBox();
-            this.rtbRight = new SynchronizedScrollRichTextBox();
-            this.rtbRightNumbers = new SynchronizedScrollRichTextBox();
-            this.lvwRevisions = new System.Windows.Forms.ListView();
             this.txtPath = new System.Windows.Forms.ToolStripTextBox();
             this.btnLoad = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -48,6 +41,14 @@ namespace CoyneSolutions.SpeeDiff
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnPreviousChange = new System.Windows.Forms.ToolStripButton();
             this.btnNextChange = new System.Windows.Forms.ToolStripButton();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.rtbLeft = new SynchronizedScrollRichTextBox();
+            this.rtbLeftNumbers = new SynchronizedScrollRichTextBox();
+            this.rtbRight = new SynchronizedScrollRichTextBox();
+            this.rtbRightNumbers = new SynchronizedScrollRichTextBox();
+            this.lvwRevisions = new System.Windows.Forms.ListView();
+            this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -62,6 +63,7 @@ namespace CoyneSolutions.SpeeDiff
             // toolStrip
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripLabel1,
             this.txtPath,
             this.btnLoad,
             this.toolStripSeparator1,
@@ -75,6 +77,74 @@ namespace CoyneSolutions.SpeeDiff
             this.toolStrip.Size = new System.Drawing.Size(944, 25);
             this.toolStrip.TabIndex = 5;
             this.toolStrip.Text = "toolStrip1";
+            // 
+            // txtPath
+            // 
+            this.txtPath.Name = "txtPath";
+            this.txtPath.Size = new System.Drawing.Size(300, 25);
+            // 
+            // btnLoad
+            // 
+            this.btnLoad.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnLoad.Image = ((System.Drawing.Image)(resources.GetObject("btnLoad.Image")));
+            this.btnLoad.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnLoad.Name = "btnLoad";
+            this.btnLoad.Size = new System.Drawing.Size(23, 22);
+            this.btnLoad.Text = "Load";
+            this.btnLoad.ToolTipText = "Load";
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+            // 
+            // btnUpRevision
+            // 
+            this.btnUpRevision.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnUpRevision.Image = ((System.Drawing.Image)(resources.GetObject("btnUpRevision.Image")));
+            this.btnUpRevision.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnUpRevision.Name = "btnUpRevision";
+            this.btnUpRevision.Size = new System.Drawing.Size(23, 22);
+            this.btnUpRevision.Text = "Go to Next Revision (Alt-Right)";
+            this.btnUpRevision.Click += new System.EventHandler(this.btnUpRevision_Click);
+            // 
+            // btnDownRevision
+            // 
+            this.btnDownRevision.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnDownRevision.Image = ((System.Drawing.Image)(resources.GetObject("btnDownRevision.Image")));
+            this.btnDownRevision.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnDownRevision.Name = "btnDownRevision";
+            this.btnDownRevision.Size = new System.Drawing.Size(23, 22);
+            this.btnDownRevision.Text = "Go to Previous Revision (Alt-Left)";
+            this.btnDownRevision.Click += new System.EventHandler(this.btnDownRevision_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
+            // 
+            // btnPreviousChange
+            // 
+            this.btnPreviousChange.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnPreviousChange.Image = ((System.Drawing.Image)(resources.GetObject("btnPreviousChange.Image")));
+            this.btnPreviousChange.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnPreviousChange.Name = "btnPreviousChange";
+            this.btnPreviousChange.Size = new System.Drawing.Size(23, 22);
+            this.btnPreviousChange.Text = "Go to Previous Change (Ctrl-Up)";
+            this.btnPreviousChange.Click += new System.EventHandler(this.btnPreviousChange_Click);
+            // 
+            // btnNextChange
+            // 
+            this.btnNextChange.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnNextChange.Image = ((System.Drawing.Image)(resources.GetObject("btnNextChange.Image")));
+            this.btnNextChange.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnNextChange.Name = "btnNextChange";
+            this.btnNextChange.Size = new System.Drawing.Size(23, 22);
+            this.btnNextChange.Text = "Go to Next Change (Ctrl-Down)";
+            this.btnNextChange.Click += new System.EventHandler(this.btnNextChange_Click);
             // 
             // splitContainer2
             // 
@@ -154,80 +224,18 @@ namespace CoyneSolutions.SpeeDiff
             this.lvwRevisions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvwRevisions.HideSelection = false;
             this.lvwRevisions.Location = new System.Drawing.Point(0, 0);
+            this.lvwRevisions.MultiSelect = false;
             this.lvwRevisions.Name = "lvwRevisions";
             this.lvwRevisions.Size = new System.Drawing.Size(944, 172);
             this.lvwRevisions.TabIndex = 3;
             this.lvwRevisions.UseCompatibleStateImageBehavior = false;
             this.lvwRevisions.View = System.Windows.Forms.View.Details;
-            this.lvwRevisions.MultiSelect = false;
             // 
-            // txtPath
+            // toolStripLabel1
             // 
-            this.txtPath.Name = "txtPath";
-            this.txtPath.Size = new System.Drawing.Size(300, 25);
-            // 
-            // btnLoad
-            // 
-            this.btnLoad.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnLoad.Image = ((System.Drawing.Image)(resources.GetObject("btnLoad.Image")));
-            this.btnLoad.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(23, 22);
-            this.btnLoad.Text = "Load";
-            this.btnLoad.ToolTipText = "Load";
-            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // btnUpRevision
-            // 
-            this.btnUpRevision.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnUpRevision.Image = ((System.Drawing.Image)(resources.GetObject("btnUpRevision.Image")));
-            this.btnUpRevision.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnUpRevision.Name = "btnUpRevision";
-            this.btnUpRevision.Size = new System.Drawing.Size(23, 22);
-            this.btnUpRevision.Text = "Go to Next Revision (Alt-Right)";
-            this.btnUpRevision.Click += new System.EventHandler(this.btnUpRevision_Click);
-            // 
-            // btnDownRevision
-            // 
-            this.btnDownRevision.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnDownRevision.Image = ((System.Drawing.Image)(resources.GetObject("btnDownRevision.Image")));
-            this.btnDownRevision.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnDownRevision.Name = "btnDownRevision";
-            this.btnDownRevision.Size = new System.Drawing.Size(23, 22);
-            this.btnDownRevision.Text = "Go to Previous Revision (Alt-Left)";
-            this.btnDownRevision.Click += new System.EventHandler(this.btnDownRevision_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
-            // 
-            // btnPreviousChange
-            // 
-            this.btnPreviousChange.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnPreviousChange.Image = ((System.Drawing.Image)(resources.GetObject("btnPreviousChange.Image")));
-            this.btnPreviousChange.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnPreviousChange.Name = "btnPreviousChange";
-            this.btnPreviousChange.Size = new System.Drawing.Size(23, 22);
-            this.btnPreviousChange.Text = "Go to Previous Change (Ctrl-Up)";
-            this.btnPreviousChange.Click += new System.EventHandler(this.btnPreviousChange_Click);
-            // 
-            // btnNextChange
-            // 
-            this.btnNextChange.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnNextChange.Image = ((System.Drawing.Image)(resources.GetObject("btnNextChange.Image")));
-            this.btnNextChange.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnNextChange.Name = "btnNextChange";
-            this.btnNextChange.Size = new System.Drawing.Size(23, 22);
-            this.btnNextChange.Text = "Go to Next Change (Ctrl-Down)";
-            this.btnNextChange.Click += new System.EventHandler(this.btnNextChange_Click);
+            this.toolStripLabel1.Name = "toolStripLabel1";
+            this.toolStripLabel1.Size = new System.Drawing.Size(28, 22);
+            this.toolStripLabel1.Text = "&File:";
             // 
             // frmDiff
             // 
@@ -271,6 +279,7 @@ namespace CoyneSolutions.SpeeDiff
         private ToolStripSeparator toolStripSeparator2;
         private ToolStripButton btnPreviousChange;
         private ToolStripButton btnNextChange;
+        private ToolStripLabel toolStripLabel1;
 
     }
 }

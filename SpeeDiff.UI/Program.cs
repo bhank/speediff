@@ -8,7 +8,7 @@
 // Use a faster text box!
 // Maybe use a cool text box with syntax highlighting
 // Add a loading spinner
-// Add a keyboard shortcut to jump to the text box
+// DONE // Add a keyboard shortcut to jump to the file text box
 // Enable viewing in an external diff viewer of your choice
 using System;
 using System.Windows.Forms;
