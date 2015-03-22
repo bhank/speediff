@@ -115,14 +115,11 @@ namespace CoyneSolutions.SpeeDiff
             if (e.IsSelected)
             {
                 var index = e.ItemIndex;
+                int leftIndex, rightIndex;
                 if (index == lvwRevisions.Items.Count - 1)
                 {
-                    index--; // -1 now if it's the only item.
-                }
-                int leftIndex, rightIndex;
-                if (index == -1)
-                {
-                    leftIndex = rightIndex = 0;
+                    leftIndex = -1;
+                    rightIndex = index;
                 }
                 else
                 {
@@ -141,7 +138,7 @@ namespace CoyneSolutions.SpeeDiff
                 Invoke(new Action<int,int>(ShowRevisions), leftIndex, rightIndex);
                 return;
             }
-            var left = revisionProvider.Revisions[leftIndex].GetContent();
+            var left = leftIndex == -1 ? string.Empty : revisionProvider.Revisions[leftIndex].GetContent();
             var right = revisionProvider.Revisions[rightIndex].GetContent();
             var builder = new SideBySideDiffBuilder(new Differ());
             var model = builder.BuildDiffModel(left, right);
