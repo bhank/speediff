@@ -51,6 +51,7 @@ namespace CoyneSolutions.SpeeDiff
             //rtbRightNumbers.Enter += FocusListView;
 
             lvwRevisions.FullRowSelect = true;
+            lvwRevisions.ShowItemToolTips = true;
             // These column widths are just placeholders which will be overwritten from Settings
             lvwRevisions.Columns.AddRange(
                 new[]
@@ -300,7 +301,17 @@ namespace CoyneSolutions.SpeeDiff
             listViewColumnSorter.ColumnSortOptions[1].Numeric = revisionProvider is SvnRevisionProvider; // Revision number, vs. hash for git
 
             var revisions = await revisionProvider.LoadRevisions();
-            lvwRevisions.Items.AddRange(revisions.Select((r, i) => new ListViewItem(new[] {i.ToString(CultureInfo.InvariantCulture), r.RevisionId, r.RevisionTime.ToString("s"), r.Author, r.Message})).ToArray());
+            lvwRevisions.Items.AddRange(revisions.Select((r, i) => new ListViewItem(new[]
+            {
+                i.ToString(CultureInfo.InvariantCulture),
+                r.RevisionId,
+                r.RevisionTime.ToString("s"),
+                r.Author,
+                r.Message,
+            })
+            {
+                ToolTipText = r.ToString(),
+            }).ToArray());
             lvwRevisions.Items[0].Selected = true;
         }
 

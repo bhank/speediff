@@ -16,7 +16,7 @@ namespace CoyneSolutions.SpeeDiff
 
         public override string ToString()
         {
-            return string.Format("{0} {1} {2} \"{3}\" [{4}]", RevisionId, RevisionTime, Author, Message, Content == null ? -1 : Content.Length);
+            return string.Format("{0}\n{1}\n{2}\n\n{3}", RevisionId, RevisionTime, Author, Message);
         }
     }
 }
