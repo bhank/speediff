@@ -15,21 +15,28 @@ namespace CoyneSolutions.SpeeDiff
     public partial class frmDiff : Form
     {
         private IRevisionProvider revisionProvider;
+        private readonly ISynchronizedScrollTextBox[] allTextBoxes;
+        private readonly ISynchronizedScrollTextBox[] numberTextBoxes;
+
 
         public frmDiff()
         {
             InitializeComponent();
 
+            allTextBoxes = new[]{rtbLeft, rtbRight, rtbLeftNumbers, rtbRightNumbers};
+            numberTextBoxes = new[] {rtbLeftNumbers, rtbRightNumbers};
+            ChangeStartPositions = new List<int>();
+
             rtbLeft.AddPeers(rtbRight, rtbLeftNumbers, rtbRightNumbers);
 
-            foreach (ISynchronizedScrollTextBox box in new[] {rtbLeft, rtbRight, rtbLeftNumbers, rtbRightNumbers})
+            foreach (ISynchronizedScrollTextBox box in allTextBoxes)
             {
                 box.ReadOnly = true;
                 box.Font = new Font(FontFamily.GenericMonospace, 10);
                 box.WordWrap = false;
             }
 
-            foreach (ISynchronizedScrollTextBox box in new[] {rtbLeftNumbers, rtbRightNumbers})
+            foreach (ISynchronizedScrollTextBox box in numberTextBoxes)
             {
                 box.ShowScrollBars = false;
                 box.BackColor = Color.Cyan;
@@ -52,6 +59,14 @@ namespace CoyneSolutions.SpeeDiff
                 }
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
+            txtPath.KeyUp += (sender, args) =>
+            {
+                if (args.KeyCode == Keys.Enter && args.Modifiers == Keys.None)
+                {
+                    btnLoad.PerformClick();
+                    args.Handled = true;
+                }
+            };
             Load += frmDiff_Load;
         }
 
@@ -250,9 +265,14 @@ namespace CoyneSolutions.SpeeDiff
 
         private async void btnLoad_Click(object sender, EventArgs e)
         {
-            //lvwRevisions.Clear();
+            ChangeStartPositions.Clear();
             lvwRevisions.Items.Clear();
+            foreach (var box in allTextBoxes)
+            {
+                box.Clear();
+            }
 
+            txtPath.Text = txtPath.Text.Trim('"');
             revisionProvider = RevisionProvider.GetRevisionProvider(txtPath.Text);
             var revisions = await revisionProvider.LoadRevisions();
             lvwRevisions.Items.AddRange(revisions.Select(r => new ListViewItem(new[] {r.RevisionId, r.RevisionTime.ToString(), r.Author, r.Message})).ToArray());
