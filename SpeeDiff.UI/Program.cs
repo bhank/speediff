@@ -10,6 +10,7 @@
 // Add a loading spinner
 // DONE // Add a keyboard shortcut to jump to the file text box
 // Enable viewing in an external diff viewer of your choice
+// Make listview scroll when you Alt-Left or Alt-Right offscreen
 using System;
 using System.Windows.Forms;
 

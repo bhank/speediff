@@ -167,8 +167,8 @@ namespace CoyneSolutions.SpeeDiff
 
         public bool ShowScrollBars
         {
-            get { return this.ScrollBars != RichTextBoxScrollBars.None; }
-            set { ScrollBars = value ? RichTextBoxScrollBars.None : RichTextBoxScrollBars.Both; }
+            get { return ScrollBars != RichTextBoxScrollBars.None; }
+            set { ScrollBars = value ? RichTextBoxScrollBars.Both : RichTextBoxScrollBars.None; }
         }
 
         public void AppendText(string text, Color color)
