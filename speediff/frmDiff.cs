@@ -49,6 +49,7 @@ namespace CoyneSolutions.SpeeDiff
             //rtbRightNumbers.Enter += FocusListView;
 
             lvwRevisions.FullRowSelect = true;
+            // These column widths are just placeholders which will be overwritten from Settings
             lvwRevisions.Columns.AddRange(
                 new[]
                 {
@@ -347,6 +348,9 @@ namespace CoyneSolutions.SpeeDiff
             Properties.Settings.Default.WindowLocation = bounds.Location;
             Properties.Settings.Default.WindowSize = bounds.Size;
             Properties.Settings.Default.WindowMaximized = WindowState == FormWindowState.Maximized;
+
+            Properties.Settings.Default.ListviewColumnWidths = (from ColumnHeader columnHeader in lvwRevisions.Columns select columnHeader.Width).ToArray();
+
             Properties.Settings.Default.Save();
         }
 
@@ -354,6 +358,11 @@ namespace CoyneSolutions.SpeeDiff
         {
             DesktopBounds = new Rectangle(Properties.Settings.Default.WindowLocation, Properties.Settings.Default.WindowSize);
             WindowState = Properties.Settings.Default.WindowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
+
+            for (var i = 0; i < lvwRevisions.Columns.Count; i++)
+            {
+                lvwRevisions.Columns[i].Width = Properties.Settings.Default.ListviewColumnWidths[i];
+            }
         }
     }
 }

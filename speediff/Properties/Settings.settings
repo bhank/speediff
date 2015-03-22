@@ -11,5 +11,15 @@
     <Setting Name="WindowMaximized" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="ListviewColumnWidths" Type="System.Int32[]" Scope="User">
+      <Value Profile="(Default)">
+        <ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+          <int>81</int>
+          <int>140</int>
+          <int>149</int>
+          <int>650</int>
+        </ArrayOfInt>
+      </Value>
+    </Setting>
   </Settings>
 </SettingsFile>

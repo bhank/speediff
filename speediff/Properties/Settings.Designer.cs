@@ -58,5 +58,17 @@ namespace CoyneSolutions.SpeeDiff.Properties {
                 this["WindowMaximized"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("81140149650")]
+        public int[] ListviewColumnWidths {
+            get {
+                return ((int[])(this["ListviewColumnWidths"]));
+            }
+            set {
+                this["ListviewColumnWidths"] = value;
+            }
+        }
     }
 }
