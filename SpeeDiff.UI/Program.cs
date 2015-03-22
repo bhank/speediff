@@ -11,6 +11,8 @@
 // DONE // Add a keyboard shortcut to jump to the file text box
 // Enable viewing in an external diff viewer of your choice
 // Make listview scroll when you Alt-Left or Alt-Right offscreen
+// Maybe change the textbox to a dropdown with recent values
+// Add real icons
 using System;
 using System.Windows.Forms;
 
