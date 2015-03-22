@@ -71,22 +71,22 @@
     <Compile Include="frmDiff.Designer.cs">
       <DependentUpon>frmDiff.cs</DependentUpon>
     </Compile>
-    <Compile Include="GitRevisionProvider.cs" />
+    <Compile Include="RevisionProvider\GitRevisionProvider.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RevisionLoadedEventArgs.cs" />
-    <Compile Include="Revision.cs" />
-    <Compile Include="IRevisionProvider.cs" />
+    <Compile Include="Entities\RevisionLoadedEventArgs.cs" />
+    <Compile Include="Entities\Revision.cs" />
+    <Compile Include="RevisionProvider\IRevisionProvider.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="RevisionProvider.cs" />
-    <Compile Include="SvnRevisionProvider.cs" />
-    <Compile Include="SynchronizedScrollRichTextBox.cs">
+    <Compile Include="RevisionProvider\RevisionProvider.cs" />
+    <Compile Include="RevisionProvider\SvnRevisionProvider.cs" />
+    <Compile Include="TextBox\SynchronizedScrollRichTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ISynchronizedScrollTextBox.cs" />
+    <Compile Include="TextBox\ISynchronizedScrollTextBox.cs" />
     <EmbeddedResource Include="frmDiff.resx">
       <DependentUpon>frmDiff.cs</DependentUpon>
     </EmbeddedResource>
