@@ -68,6 +68,12 @@ namespace CoyneSolutions.SpeeDiff
                 }
             };
             Load += frmDiff_Load;
+            Closing += frmDiff_Closing;
+        }
+
+        void frmDiff_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveWindowPosition();
         }
 
         private void GotoChange(bool next)
@@ -103,6 +109,8 @@ namespace CoyneSolutions.SpeeDiff
 
         private void frmDiff_Load(object sender, EventArgs e)
         {
+            LoadWindowPosition();
+
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 txtPath.Text = Environment.GetCommandLineArgs()[1];
@@ -270,7 +278,16 @@ namespace CoyneSolutions.SpeeDiff
             }
 
             txtPath.Text = txtPath.Text.Trim('"');
-            revisionProvider = RevisionProvider.GetRevisionProvider(txtPath.Text);
+
+            try
+            {
+                revisionProvider = RevisionProvider.GetRevisionProvider(txtPath.Text);
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + txtPath.Text, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             var revisions = await revisionProvider.LoadRevisions();
             lvwRevisions.Items.AddRange(revisions.Select(r => new ListViewItem(new[] {r.RevisionId, r.RevisionTime.ToString(), r.Author, r.Message})).ToArray());
             lvwRevisions.Items[0].Selected = true;
@@ -321,6 +338,22 @@ namespace CoyneSolutions.SpeeDiff
                 }
             }
             lvwRevisions.Items[newIndex].Selected = true;
+        }
+
+        // http://stackoverflow.com/questions/92540/save-and-restore-form-position-and-size
+        private void SaveWindowPosition()
+        {
+            var bounds = WindowState == FormWindowState.Normal ? DesktopBounds : RestoreBounds;
+            Properties.Settings.Default.WindowLocation = bounds.Location;
+            Properties.Settings.Default.WindowSize = bounds.Size;
+            Properties.Settings.Default.WindowMaximized = WindowState == FormWindowState.Maximized;
+            Properties.Settings.Default.Save();
+        }
+
+        private void LoadWindowPosition()
+        {
+            DesktopBounds = new Rectangle(Properties.Settings.Default.WindowLocation, Properties.Settings.Default.WindowSize);
+            WindowState = Properties.Settings.Default.WindowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
         }
     }
 }

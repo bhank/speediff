@@ -89,6 +89,11 @@ namespace CoyneSolutions.SpeeDiff
             relativePath = null;
 
             var startingDirectory = new DirectoryInfo(GetExactPathName(path)); // Correct the case of the file, so we can find it in Git's tree
+            if (!startingDirectory.Exists && (startingDirectory.Parent == null || !startingDirectory.Parent.Exists)) // startingDirectory should be a file, not a directory, so it won't exist, but its parent will.
+            {
+                return false;
+            }
+
             DirectoryInfo currentDirectory;
             if ((File.GetAttributes(startingDirectory.FullName) & FileAttributes.Directory) == FileAttributes.Directory)
             {
