@@ -215,7 +215,7 @@ namespace CoyneSolutions.SpeeDiff
                 case ChangeType.Imaginary:
                     return Color.Blue;
                 case ChangeType.Inserted:
-                    return Color.Green;
+                    return Color.LightGreen;
                 case ChangeType.Modified:
                     return Color.Orange;
                 case ChangeType.Unchanged:
