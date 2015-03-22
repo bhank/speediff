@@ -12,9 +12,8 @@
 // Enable viewing in an external diff viewer of your choice
 using System;
 using System.Windows.Forms;
-using CoyneSolutions.SpeeDiff;
 
-namespace speediff
+namespace CoyneSolutions.SpeeDiff
 {
     static class Program
     {
