@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace CoyneSolutions.SpeeDiff
         private IRevisionProvider revisionProvider;
         private readonly ISynchronizedScrollTextBox[] allTextBoxes;
         private readonly ISynchronizedScrollTextBox[] numberTextBoxes;
+        private readonly ListViewColumnSorter listViewColumnSorter;
 
 
         public frmDiff()
@@ -53,6 +55,7 @@ namespace CoyneSolutions.SpeeDiff
             lvwRevisions.Columns.AddRange(
                 new[]
                 {
+                    new ColumnHeader {Text = "Order", Width = 35},
                     new ColumnHeader {Text = "Revision", Width = 70},
                     new ColumnHeader {Text = "Time", Width = 125},
                     new ColumnHeader {Text = "Author", Width = 75},
@@ -60,6 +63,7 @@ namespace CoyneSolutions.SpeeDiff
                 }
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
+            listViewColumnSorter = new ListViewColumnSorter(lvwRevisions);
             txtPath.KeyUp += (sender, args) =>
             {
                 if (args.KeyCode == Keys.Enter && args.Modifiers == Keys.None)
@@ -123,7 +127,7 @@ namespace CoyneSolutions.SpeeDiff
         {
             if (e.IsSelected)
             {
-                var index = e.ItemIndex;
+                var index = int.Parse(e.Item.Text);
                 int leftIndex, rightIndex;
                 if (index == lvwRevisions.Items.Count - 1)
                 {
@@ -161,6 +165,7 @@ namespace CoyneSolutions.SpeeDiff
 
             foreach (var box in new[] {textBox, lineNumbersTextBox})
             {
+                box.DisableScrollSync = true;
                 box.StopRepaint();
                 box.SavePosition();
                 box.Clear();
@@ -209,6 +214,7 @@ namespace CoyneSolutions.SpeeDiff
             foreach (var box in new[] {textBox, lineNumbersTextBox})
             {
                 box.RestorePosition();
+                box.DisableScrollSync = false;
                 box.StartRepaint();
             }
 
@@ -289,8 +295,12 @@ namespace CoyneSolutions.SpeeDiff
                 MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + txtPath.Text, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            listViewColumnSorter.ColumnSortOptions[0].Numeric = true; // Original order column
+            listViewColumnSorter.ColumnSortOptions[1].Numeric = revisionProvider is SvnRevisionProvider; // Revision number, vs. hash for git
+
             var revisions = await revisionProvider.LoadRevisions();
-            lvwRevisions.Items.AddRange(revisions.Select(r => new ListViewItem(new[] {r.RevisionId, r.RevisionTime.ToString(), r.Author, r.Message})).ToArray());
+            lvwRevisions.Items.AddRange(revisions.Select((r, i) => new ListViewItem(new[] {i.ToString(CultureInfo.InvariantCulture), r.RevisionId, r.RevisionTime.ToString("s"), r.Author, r.Message})).ToArray());
             lvwRevisions.Items[0].Selected = true;
         }
 
@@ -359,7 +369,7 @@ namespace CoyneSolutions.SpeeDiff
             DesktopBounds = new Rectangle(Properties.Settings.Default.WindowLocation, Properties.Settings.Default.WindowSize);
             WindowState = Properties.Settings.Default.WindowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
 
-            for (var i = 0; i < lvwRevisions.Columns.Count; i++)
+            for (var i = 0; i < lvwRevisions.Columns.Count && i < Properties.Settings.Default.ListviewColumnWidths.Length; i++)
             {
                 lvwRevisions.Columns[i].Width = Properties.Settings.Default.ListviewColumnWidths[i];
             }

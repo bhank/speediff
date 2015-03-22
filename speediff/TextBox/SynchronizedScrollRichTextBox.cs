@@ -76,7 +76,7 @@ namespace CoyneSolutions.SpeeDiff
         private const UInt32 EM_GETSCROLLPOS = WM_USER + 221;
         private const UInt32 EM_SETSCROLLPOS = WM_USER + 222;
 
-        private bool settingScrollPosition;
+        public bool DisableScrollSync { get; set; }
 
         private POINT ScrollPosition
         {
@@ -88,16 +88,16 @@ namespace CoyneSolutions.SpeeDiff
             }
             set
             {
-                settingScrollPosition = true;
+                DisableScrollSync = true;
                 SendMessage(Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref value);
-                settingScrollPosition = false;
+                DisableScrollSync = false;
             }
         }
 
         protected override void OnVScroll(EventArgs e)
         {
             base.OnVScroll(e);
-            if (!settingScrollPosition)
+            if (!DisableScrollSync)
             {
                 var scrollPosition = ScrollPosition;
                 foreach (var peer in peers)
@@ -118,7 +118,9 @@ namespace CoyneSolutions.SpeeDiff
 
         public void RestorePosition()
         {
-            SelectionStart = GetFirstCharIndexFromLine(savedSelectedLineNumber);
+            var charIndex = GetFirstCharIndexFromLine(savedSelectedLineNumber);
+            if (charIndex == -1) charIndex = 0;
+            SelectionStart = charIndex;
             ScrollPosition = savedScrollPosition;
         }
 

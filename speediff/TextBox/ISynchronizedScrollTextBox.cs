@@ -5,6 +5,7 @@ namespace CoyneSolutions.SpeeDiff
 {
     public interface ISynchronizedScrollTextBox
     {
+        bool DisableScrollSync { get; set; }
         bool ShowScrollBars { get; set; }
         bool ReadOnly { get; set; }
         Font Font { get; set; }

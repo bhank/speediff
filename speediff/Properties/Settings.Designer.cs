@@ -61,7 +61,10 @@ namespace CoyneSolutions.SpeeDiff.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("81140149650")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfInt xmlns:xsi=\"http://www.w3.org" +
+            "/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n  <int>" +
+            "61</int>\r\n  <int>81</int>\r\n  <int>140</int>\r\n  <int>149</int>\r\n  <int>650</int>\r" +
+            "\n</ArrayOfInt>")]
         public int[] ListviewColumnWidths {
             get {
                 return ((int[])(this["ListviewColumnWidths"]));

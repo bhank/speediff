@@ -13,6 +13,7 @@
 // Make listview scroll when you Alt-Left or Alt-Right offscreen
 // Maybe change the textbox to a dropdown with recent values
 // Add real icons
+// Save splits?
 using System;
 using System.Windows.Forms;
 

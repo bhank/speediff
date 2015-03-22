@@ -12,14 +12,14 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ListviewColumnWidths" Type="System.Int32[]" Scope="User">
-      <Value Profile="(Default)">
-        <ArrayOfInt xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-          <int>81</int>
-          <int>140</int>
-          <int>149</int>
-          <int>650</int>
-        </ArrayOfInt>
-      </Value>
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfInt xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;int&gt;61&lt;/int&gt;
+  &lt;int&gt;81&lt;/int&gt;
+  &lt;int&gt;140&lt;/int&gt;
+  &lt;int&gt;149&lt;/int&gt;
+  &lt;int&gt;650&lt;/int&gt;
+&lt;/ArrayOfInt&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>
