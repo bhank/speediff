@@ -65,7 +65,7 @@ namespace CoyneSolutions.SpeeDiff
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
             listViewColumnSorter = new ListViewColumnSorter(lvwRevisions);
-            txtPath.KeyUp += (sender, args) =>
+            cbxPath.KeyUp += (sender, args) =>
             {
                 if (args.KeyCode == Keys.Enter && args.Modifiers == Keys.None)
                 {
@@ -119,7 +119,7 @@ namespace CoyneSolutions.SpeeDiff
 
             if (Environment.GetCommandLineArgs().Length > 1)
             {
-                txtPath.Text = Environment.GetCommandLineArgs()[1];
+                cbxPath.Text = Environment.GetCommandLineArgs()[1];
                 btnLoad.PerformClick();
             }
         }
@@ -285,15 +285,15 @@ namespace CoyneSolutions.SpeeDiff
                 box.Clear();
             }
 
-            txtPath.Text = txtPath.Text.Trim('"');
+            cbxPath.Text = cbxPath.Text.Trim('"');
 
             try
             {
-                revisionProvider = RevisionProvider.GetRevisionProvider(txtPath.Text);
+                revisionProvider = RevisionProvider.GetRevisionProvider(cbxPath.Text);
             }
             catch (ArgumentException)
             {
-                MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + txtPath.Text, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + cbxPath.Text, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
