@@ -2,18 +2,20 @@
 // Test with UTF8 (need to pass it to streamreader ctor?)
 // DONE // Separate line numbers into different (scroll-synced) textboxes, so you can copy and paste
 // DONE // Maintain scroll position when switching revisions
-// Save sizes of columns in listview, and window size
-// Maybe make listview sortable...
+// DONE // Save sizes of columns in listview, and window size
+// DONE // Maybe make listview sortable...
 // DONE // Enable flipping through changes with Ctrl-Up and Ctrl-Down
 // Use a faster text box!
 // Maybe use a cool text box with syntax highlighting
 // Add a loading spinner
 // DONE // Add a keyboard shortcut to jump to the file text box
-// Enable viewing in an external diff viewer of your choice
+// Enable viewing in an external diff viewer of your choice (maybe right-click a revision)
 // Make listview scroll when you Alt-Left or Alt-Right offscreen
-// Maybe change the textbox to a dropdown with recent values
-// Add real icons
+// DONE // Maybe change the textbox to a dropdown with recent values
+// DONE // Add real icons
 // Save splits?
+// Prevent "ding" on Enter in filename box
+// Maybe combine the two Properties save calls
 using System;
 using System.Windows.Forms;
 

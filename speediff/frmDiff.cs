@@ -19,7 +19,7 @@ namespace CoyneSolutions.SpeeDiff
         private readonly ISynchronizedScrollTextBox[] allTextBoxes;
         private readonly ISynchronizedScrollTextBox[] numberTextBoxes;
         private readonly ListViewColumnSorter listViewColumnSorter;
-
+        private const int maxMostRecentlyUsedFiles = 15;
 
         public frmDiff()
         {
@@ -65,6 +65,14 @@ namespace CoyneSolutions.SpeeDiff
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
             listViewColumnSorter = new ListViewColumnSorter(lvwRevisions);
+            // Can't use the keyboard to go through the dropdown if I do this.
+            //cbxPath.SelectedIndexChanged += (sender, args) =>
+            //{
+            //    if (!changingComboBox && cbxPath.SelectedIndex > -1)
+            //    {
+            //        btnLoad.PerformClick();
+            //    }
+            //};
             cbxPath.KeyUp += (sender, args) =>
             {
                 if (args.KeyCode == Keys.Enter && args.Modifiers == Keys.None)
@@ -80,6 +88,7 @@ namespace CoyneSolutions.SpeeDiff
         void frmDiff_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             SaveWindowPosition();
+            SaveMostRecentlyUsedFiles();
         }
 
         private void GotoChange(bool next)
@@ -116,7 +125,7 @@ namespace CoyneSolutions.SpeeDiff
         private void frmDiff_Load(object sender, EventArgs e)
         {
             LoadWindowPosition();
-
+            LoadMostRecentlyUsedFiles();
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 cbxPath.Text = Environment.GetCommandLineArgs()[1];
@@ -313,6 +322,18 @@ namespace CoyneSolutions.SpeeDiff
                 ToolTipText = r.ToString(),
             }).ToArray());
             lvwRevisions.Items[0].Selected = true;
+            AddMostRecentlyUsedFilename(cbxPath.Text);
+        }
+
+        //private bool changingComboBox = false;
+        private void AddMostRecentlyUsedFilename(string filename)
+        {
+            //changingComboBox = true;
+            cbxPath.Items.Remove(filename);
+            cbxPath.Items.Insert(0, filename);
+            //cbxPath.SelectedIndex = 0;
+            cbxPath.Text = filename;
+            //changingComboBox = false;
         }
 
         private void btnUpRevision_Click(object sender, EventArgs e)
@@ -384,6 +405,19 @@ namespace CoyneSolutions.SpeeDiff
             {
                 lvwRevisions.Columns[i].Width = Properties.Settings.Default.ListviewColumnWidths[i];
             }
+        }
+
+        private void LoadMostRecentlyUsedFiles()
+        {
+            var mostRecentlyUsedFiles = Properties.Settings.Default.MostRecentlyUsedFiles.Cast<object>().ToArray();
+            cbxPath.Items.AddRange(mostRecentlyUsedFiles);
+        }
+
+        private void SaveMostRecentlyUsedFiles()
+        {
+            Properties.Settings.Default.MostRecentlyUsedFiles.Clear();
+            Properties.Settings.Default.MostRecentlyUsedFiles.AddRange(cbxPath.Items.Cast<string>().Take(maxMostRecentlyUsedFiles).ToArray());
+            Properties.Settings.Default.Save();
         }
     }
 }
