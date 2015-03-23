@@ -47,7 +47,7 @@ namespace CoyneSolutions.SpeeDiff
             this.rtbLeftNumbers = new SynchronizedScrollRichTextBox();
             this.rtbRight = new SynchronizedScrollRichTextBox();
             this.rtbRightNumbers = new SynchronizedScrollRichTextBox();
-            this.lvwRevisions = new System.Windows.Forms.ListView();
+            this.lvwRevisions = new ListViewWithSubitemTooltips();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -265,7 +265,7 @@ namespace CoyneSolutions.SpeeDiff
 
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListView lvwRevisions;
+        private ListViewWithSubitemTooltips lvwRevisions;
         private SynchronizedScrollRichTextBox rtbLeft;
         private SynchronizedScrollRichTextBox rtbLeftNumbers;
         private SynchronizedScrollRichTextBox rtbRight;

@@ -67,6 +67,9 @@
   <ItemGroup>
     <Compile Include="Entities\ListViewColumnSortOptions.cs" />
     <Compile Include="Entities\ListViewColumnSorter.cs" />
+    <Compile Include="Entities\ListViewWithSubitemTooltips.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="frmDiff.cs">
       <SubType>Form</SubType>
     </Compile>
