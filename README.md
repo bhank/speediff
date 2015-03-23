@@ -7,4 +7,6 @@ It is inspired by [SVN Time Lapse View][1], a useful but long-abandoned Java app
 
 -Adam Coyne
 
+![Screenshot](https://github.com/bhank/speediff/raw/master/speediff-screenshot.png)
+
 [1]: https://code.google.com/p/svn-time-lapse-view/ "SVN Time Lapse View"
