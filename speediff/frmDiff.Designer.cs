@@ -164,6 +164,7 @@ namespace CoyneSolutions.SpeeDiff
             this.splitContainer2.Panel2.Controls.Add(this.lvwRevisions);
             this.splitContainer2.Size = new System.Drawing.Size(944, 571);
             this.splitContainer2.SplitterDistance = 395;
+            this.splitContainer2.TabIndex = 1;
             this.splitContainer2.TabStop = false;
             // 
             // splitContainer1
@@ -183,6 +184,7 @@ namespace CoyneSolutions.SpeeDiff
             this.splitContainer1.Panel2.Controls.Add(this.rtbRightNumbers);
             this.splitContainer1.Size = new System.Drawing.Size(944, 395);
             this.splitContainer1.SplitterDistance = 473;
+            this.splitContainer1.TabIndex = 2;
             this.splitContainer1.TabStop = false;
             // 
             // rtbLeft
@@ -191,7 +193,7 @@ namespace CoyneSolutions.SpeeDiff
             this.rtbLeft.Location = new System.Drawing.Point(71, 0);
             this.rtbLeft.Name = "rtbLeft";
             this.rtbLeft.Size = new System.Drawing.Size(402, 395);
-            this.rtbLeft.TabIndex = 2;
+            this.rtbLeft.TabIndex = 3;
             this.rtbLeft.Text = "";
             // 
             // rtbLeftNumbers
@@ -209,7 +211,7 @@ namespace CoyneSolutions.SpeeDiff
             this.rtbRight.Location = new System.Drawing.Point(78, 0);
             this.rtbRight.Name = "rtbRight";
             this.rtbRight.Size = new System.Drawing.Size(389, 395);
-            this.rtbRight.TabIndex = 3;
+            this.rtbRight.TabIndex = 4;
             this.rtbRight.Text = "";
             // 
             // rtbRightNumbers
@@ -229,7 +231,7 @@ namespace CoyneSolutions.SpeeDiff
             this.lvwRevisions.MultiSelect = false;
             this.lvwRevisions.Name = "lvwRevisions";
             this.lvwRevisions.Size = new System.Drawing.Size(944, 172);
-            this.lvwRevisions.TabIndex = 3;
+            this.lvwRevisions.TabIndex = 5;
             this.lvwRevisions.UseCompatibleStateImageBehavior = false;
             this.lvwRevisions.View = System.Windows.Forms.View.Details;
             // 
