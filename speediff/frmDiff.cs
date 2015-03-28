@@ -147,6 +147,10 @@ namespace CoyneSolutions.SpeeDiff
             {
                 rtbLeft.SelectionStart = newPosition;
                 rtbLeft.ScrollToCaret();
+                
+                var lineNumber = rtbLeft.GetLineFromCharIndex(newPosition);
+                var rightPosition = rtbRight.GetFirstCharIndexFromLine(lineNumber);
+                rtbRight.SelectionStart = rightPosition;
             }
         }
 
@@ -364,6 +368,7 @@ namespace CoyneSolutions.SpeeDiff
             }).ToArray());
             lvwRevisions.Items[0].Selected = true;
             AddMostRecentlyUsedFilename(filename);
+            rtbRight.Select();
         }
 
         private void AddMostRecentlyUsedFilename(string filename)

@@ -15,8 +15,8 @@
 // DONE // Add real icons
 // Save splits?
 // DONE // Prevent "ding" on Enter in filename box
-// Maybe combine the two Properties save calls
-// Add form icon
+// DONE // Maybe combine the two Properties save calls
+// DONE // Add form icon
 // DONE // Shrink line number columns
 // Maybe ding when you try to go to the next/previous change when there is none, or the next/previous revision
 // Add binary release to github
@@ -27,7 +27,7 @@
 // Right-click to view entire log (do I get that info already?), or to view it in TortoiseSVN
 // Maybe jump to the first change, if you're on the first line of the file?
 // Maybe show a count of the changes, like p4merge? Types too. (could go in a status bar)
-// Set focus to left or right textbox after selecting a revision, so you can ctrl-home to the top and such
+// DONE // Set focus to left or right textbox after selecting a revision, so you can ctrl-home to the top and such
 // DONE // Disable tab to the line number boxes; disable caret if possible (or disable the whole thing, if I can figure out how to keep the background color)
 // DONE // Add Browse... option in the combobox
 // DONE // Detect TortoiseSVN and offer RepoBrowser option in combobox
