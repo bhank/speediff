@@ -153,6 +153,10 @@ namespace CoyneSolutions.SpeeDiff
                 var rightPosition = rtbRight.GetFirstCharIndexFromLine(lineNumber);
                 rtbRight.SelectionStart = rightPosition;
             }
+            else
+            {
+                System.Media.SystemSounds.Beep.Play();
+            }
         }
 
         private void frmDiff_Load(object sender, EventArgs e)
@@ -403,12 +407,13 @@ namespace CoyneSolutions.SpeeDiff
             }
             if (next)
             {
-                if (currentIndex < 1)
+                if (currentIndex < 0)
                 {
                     newIndex = 0;
                 }
                 else if (currentIndex == 0)
                 {
+                    System.Media.SystemSounds.Beep.Play();
                     return;
                 }
                 else
@@ -420,6 +425,7 @@ namespace CoyneSolutions.SpeeDiff
             {
                 if (currentIndex == lvwRevisions.Items.Count - 1)
                 {
+                    System.Media.SystemSounds.Beep.Play();
                     return;
                 }
                 else

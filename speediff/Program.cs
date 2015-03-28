@@ -18,11 +18,11 @@
 // DONE // Maybe combine the two Properties save calls
 // DONE // Add form icon
 // DONE // Shrink line number columns
-// Maybe ding when you try to go to the next/previous change when there is none, or the next/previous revision
+// DONE // Maybe ding when you try to go to the next/previous change when there is none, or the next/previous revision
 // Add binary release to github
 // Deal with authentication?
 // Limit revisions loaded, for speed?
-// Fix horizontal scroll sync to refresh properly -- and don't sync it to the line number textboxes
+// DONE // Fix horizontal scroll sync to refresh properly -- and don't sync it to the line number textboxes
 // Maybe add a current-line-compare box at the bottom?
 // Right-click to view entire log (do I get that info already?), or to view it in TortoiseSVN
 // Maybe jump to the first change, if you're on the first line of the file?
