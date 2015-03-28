@@ -68,24 +68,48 @@ namespace CoyneSolutions.SpeeDiff
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
             listViewColumnSorter = new ListViewColumnSorter(lvwRevisions);
-            // Can't use the keyboard to go through the dropdown if I do this.
-            //cbxPath.SelectedIndexChanged += (sender, args) =>
-            //{
-            //    if (!changingComboBox && cbxPath.SelectedIndex > -1)
-            //    {
-            //        btnLoad.PerformClick();
-            //    }
-            //};
-            cbxPath.KeyUp += (sender, args) =>
+
+            cbxPath.ComboBox.SelectionChangeCommitted += (sender, args) =>
             {
-                if (args.KeyCode == Keys.Enter && args.Modifiers == Keys.None)
+                if (cbxPath.DroppedDown)
                 {
-                    btnLoad.PerformClick();
+                    ComboBoxItemSelected();
+                }
+            };
+            cbxPath.ComboBox.KeyDown += (sender, args) =>
+            {
+                if (args.KeyCode == Keys.Enter && args.Modifiers == Keys.None && !cbxPath.DroppedDown)
+                {
                     args.Handled = true;
+                    args.SuppressKeyPress = true; // Stop the ding
+                    ComboBoxItemSelected();
                 }
             };
             Load += frmDiff_Load;
             Closing += frmDiff_Closing;
+        }
+
+        private void ComboBoxItemSelected()
+        {
+            if (cbxPath.SelectedItem == null)
+            {
+                LoadFile(cbxPath.Text);
+            }
+            else
+            {
+                var comboBoxCommand = cbxPath.SelectedItem as ComboBoxCommand;
+                if (comboBoxCommand != null)
+                {
+                    //cbxPath.SelectedIndex = -1;
+                    comboBoxCommand.Action();
+                    // Hmm. Whether I use SelectionChangeCommitted or SelectedIndexChanged, the change will cause the combobox's text to be changed after the action runs, changing the text away from the filename.
+                    // What if I don't change it, and rely on the Action to change it? No good.. it will still get changed to this afterward.
+                }
+                else
+                {
+                    LoadFile(cbxPath.SelectedItem.ToString());
+                }
+            }
         }
 
         void frmDiff_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -131,8 +155,7 @@ namespace CoyneSolutions.SpeeDiff
             LoadMostRecentlyUsedFiles();
             if (Environment.GetCommandLineArgs().Length > 1)
             {
-                cbxPath.Text = Environment.GetCommandLineArgs()[1];
-                btnLoad.PerformClick();
+                LoadFile(Environment.GetCommandLineArgs()[1]);
             }
         }
 
@@ -288,7 +311,12 @@ namespace CoyneSolutions.SpeeDiff
             GotoChange(true);
         }
 
-        private async void btnLoad_Click(object sender, EventArgs e)
+        private void btnLoad_Click(object sender, EventArgs e)
+        {
+            LoadFile(cbxPath.Text);
+        }
+
+        private async void LoadFile(string filename)
         {
             ChangeStartPositions.Clear();
             lvwRevisions.Items.Clear();
@@ -296,23 +324,28 @@ namespace CoyneSolutions.SpeeDiff
             {
                 box.Clear();
             }
+            Text = formTitle;
 
-            cbxPath.Text = cbxPath.Text.Trim('"');
+            if (string.IsNullOrEmpty(filename))
+            {
+                BeginInvoke(new Action(() => cbxPath.Text = string.Empty)); // Need to invoke in case the combo box selection is changing, since in that case any text I set here will get overwritten.
+                return;
+            }
 
             try
             {
-                revisionProvider = RevisionProvider.GetRevisionProvider(cbxPath.Text);
+                revisionProvider = RevisionProvider.GetRevisionProvider(filename);
             }
             catch (ArgumentException)
             {
-                MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + cbxPath.Text, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + filename, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             listViewColumnSorter.ColumnSortOptions[0].Numeric = true; // Original order column
             listViewColumnSorter.ColumnSortOptions[1].Numeric = revisionProvider is SvnRevisionProvider; // Revision number, vs. hash for git
 
-            Text = string.Format("{0} - {1}", cbxPath.Text, formTitle);
+            Text = string.Format("{0} - {1}", filename, formTitle);
 
             var revisions = await revisionProvider.LoadRevisions();
             lvwRevisions.Items.AddRange(revisions.Select((r, i) => new ListViewItem(new[]
@@ -327,18 +360,15 @@ namespace CoyneSolutions.SpeeDiff
                 ToolTipText = r.ToString(),
             }).ToArray());
             lvwRevisions.Items[0].Selected = true;
-            AddMostRecentlyUsedFilename(cbxPath.Text);
+            AddMostRecentlyUsedFilename(filename);
         }
 
-        //private bool changingComboBox = false;
         private void AddMostRecentlyUsedFilename(string filename)
         {
-            //changingComboBox = true;
             cbxPath.Items.Remove(filename);
             cbxPath.Items.Insert(0, filename);
-            //cbxPath.SelectedIndex = 0;
             cbxPath.Text = filename;
-            //changingComboBox = false;
+            cbxPath.SelectAll();
         }
 
         private void btnUpRevision_Click(object sender, EventArgs e)
@@ -416,13 +446,37 @@ namespace CoyneSolutions.SpeeDiff
         {
             var mostRecentlyUsedFiles = Properties.Settings.Default.MostRecentlyUsedFiles.Cast<object>().ToArray();
             cbxPath.Items.AddRange(mostRecentlyUsedFiles);
+            cbxPath.Items.Add(new ComboBoxCommand("Browse...", Browse));
+            if (TortoiseSvnHelper.Exists)
+            {
+                cbxPath.Items.Add(new ComboBoxCommand("TortoiseSVN Repo Browser...", RepoBrowse));
+            }
         }
 
         private void SaveMostRecentlyUsedFiles()
         {
             Properties.Settings.Default.MostRecentlyUsedFiles.Clear();
-            Properties.Settings.Default.MostRecentlyUsedFiles.AddRange(cbxPath.Items.Cast<string>().Take(maxMostRecentlyUsedFiles).ToArray());
+            Properties.Settings.Default.MostRecentlyUsedFiles.AddRange(cbxPath.Items.OfType<string>().Where(s => !string.IsNullOrWhiteSpace(s)).Take(maxMostRecentlyUsedFiles).ToArray());
             Properties.Settings.Default.Save();
+        }
+
+        private void Browse()
+        {
+            var dialog = new OpenFileDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                LoadFile(dialog.FileName);
+            }
+            else
+            {
+                LoadFile(string.Empty);
+            }
+        }
+
+        private void RepoBrowse()
+        {
+            var url = TortoiseSvnHelper.GetUrlFromRepoBrowser();
+            LoadFile(url);
         }
     }
 }
