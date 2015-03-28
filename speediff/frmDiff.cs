@@ -15,6 +15,7 @@ namespace CoyneSolutions.SpeeDiff
 {
     public partial class frmDiff : Form
     {
+        private const string formTitle = "speediff";
         private IRevisionProvider revisionProvider;
         private readonly ISynchronizedScrollTextBox[] allTextBoxes;
         private readonly ISynchronizedScrollTextBox[] numberTextBoxes;
@@ -24,6 +25,8 @@ namespace CoyneSolutions.SpeeDiff
         public frmDiff()
         {
             InitializeComponent();
+
+            Text = formTitle;
 
             allTextBoxes = new[]{rtbLeft, rtbRight, rtbLeftNumbers, rtbRightNumbers};
             numberTextBoxes = new[] {rtbLeftNumbers, rtbRightNumbers};
@@ -302,12 +305,14 @@ namespace CoyneSolutions.SpeeDiff
             }
             catch (ArgumentException)
             {
-                MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + cbxPath.Text, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + cbxPath.Text, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             listViewColumnSorter.ColumnSortOptions[0].Numeric = true; // Original order column
             listViewColumnSorter.ColumnSortOptions[1].Numeric = revisionProvider is SvnRevisionProvider; // Revision number, vs. hash for git
+
+            Text = string.Format("{0} - {1}", cbxPath.Text, formTitle);
 
             var revisions = await revisionProvider.LoadRevisions();
             lvwRevisions.Items.AddRange(revisions.Select((r, i) => new ListViewItem(new[]
