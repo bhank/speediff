@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CoyneSolutions.SpeeDiff.Properties;
 using DiffPlex;
 using DiffPlex.DiffBuilder;
 using DiffPlex.DiffBuilder.Model;
@@ -112,8 +113,10 @@ namespace CoyneSolutions.SpeeDiff
 
         void frmDiff_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            SaveWindowPosition();
-            SaveMostRecentlyUsedFiles();
+            var settings = Properties.Settings.Default;
+            SaveWindowPosition(settings);
+            SaveMostRecentlyUsedFiles(settings);
+            settings.Save();
         }
 
         private void GotoChange(bool next)
@@ -149,8 +152,9 @@ namespace CoyneSolutions.SpeeDiff
 
         private void frmDiff_Load(object sender, EventArgs e)
         {
-            LoadWindowPosition();
-            LoadMostRecentlyUsedFiles();
+            var settings = Properties.Settings.Default;
+            LoadWindowPosition(settings);
+            LoadMostRecentlyUsedFiles(settings);
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 LoadFile(Environment.GetCommandLineArgs()[1]);
@@ -423,32 +427,29 @@ namespace CoyneSolutions.SpeeDiff
         }
 
         // http://stackoverflow.com/questions/92540/save-and-restore-form-position-and-size
-        private void SaveWindowPosition()
+        private void SaveWindowPosition(Settings settings)
         {
             var bounds = WindowState == FormWindowState.Normal ? DesktopBounds : RestoreBounds;
-            Properties.Settings.Default.WindowLocation = bounds.Location;
-            Properties.Settings.Default.WindowSize = bounds.Size;
-            Properties.Settings.Default.WindowMaximized = WindowState == FormWindowState.Maximized;
-
-            Properties.Settings.Default.ListviewColumnWidths = (from ColumnHeader columnHeader in lvwRevisions.Columns select columnHeader.Width).ToArray();
-
-            Properties.Settings.Default.Save();
+            settings.WindowLocation = bounds.Location;
+            settings.WindowSize = bounds.Size;
+            settings.WindowMaximized = WindowState == FormWindowState.Maximized;
+            settings.ListviewColumnWidths = (from ColumnHeader columnHeader in lvwRevisions.Columns select columnHeader.Width).ToArray();
         }
 
-        private void LoadWindowPosition()
+        private void LoadWindowPosition(Settings settings)
         {
-            DesktopBounds = new Rectangle(Properties.Settings.Default.WindowLocation, Properties.Settings.Default.WindowSize);
-            WindowState = Properties.Settings.Default.WindowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
+            DesktopBounds = new Rectangle(settings.WindowLocation, settings.WindowSize);
+            WindowState = settings.WindowMaximized ? FormWindowState.Maximized : FormWindowState.Normal;
 
-            for (var i = 0; i < lvwRevisions.Columns.Count && i < Properties.Settings.Default.ListviewColumnWidths.Length; i++)
+            for (var i = 0; i < lvwRevisions.Columns.Count && i < settings.ListviewColumnWidths.Length; i++)
             {
-                lvwRevisions.Columns[i].Width = Properties.Settings.Default.ListviewColumnWidths[i];
+                lvwRevisions.Columns[i].Width = settings.ListviewColumnWidths[i];
             }
         }
 
-        private void LoadMostRecentlyUsedFiles()
+        private void LoadMostRecentlyUsedFiles(Settings settings)
         {
-            var mostRecentlyUsedFiles = Properties.Settings.Default.MostRecentlyUsedFiles.Cast<object>().ToArray();
+            var mostRecentlyUsedFiles = settings.MostRecentlyUsedFiles.Cast<object>().ToArray();
             cbxPath.Items.AddRange(mostRecentlyUsedFiles);
             cbxPath.Items.Add(new ComboBoxCommand("Browse...", Browse));
             if (TortoiseSvnHelper.Exists)
@@ -457,11 +458,10 @@ namespace CoyneSolutions.SpeeDiff
             }
         }
 
-        private void SaveMostRecentlyUsedFiles()
+        private void SaveMostRecentlyUsedFiles(Settings settings)
         {
-            Properties.Settings.Default.MostRecentlyUsedFiles.Clear();
-            Properties.Settings.Default.MostRecentlyUsedFiles.AddRange(cbxPath.Items.OfType<string>().Where(s => !string.IsNullOrWhiteSpace(s)).Take(Config.MaxMostRecentlyUsedFiles).ToArray());
-            Properties.Settings.Default.Save();
+            settings.MostRecentlyUsedFiles.Clear();
+            settings.MostRecentlyUsedFiles.AddRange(cbxPath.Items.OfType<string>().Where(s => !string.IsNullOrWhiteSpace(s)).Take(Config.MaxMostRecentlyUsedFiles).ToArray());
         }
 
         private void Browse()
