@@ -34,7 +34,6 @@ namespace CoyneSolutions.SpeeDiff
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDiff));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
-            this.btnLoad = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.btnUpRevision = new System.Windows.Forms.ToolStripButton();
             this.btnDownRevision = new System.Windows.Forms.ToolStripButton();
@@ -65,7 +64,6 @@ namespace CoyneSolutions.SpeeDiff
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1,
             this.cbxPath,
-            this.btnLoad,
             this.toolStripSeparator1,
             this.btnDownRevision,
             this.btnUpRevision,
@@ -84,17 +82,6 @@ namespace CoyneSolutions.SpeeDiff
             this.toolStripLabel1.Name = "toolStripLabel1";
             this.toolStripLabel1.Size = new System.Drawing.Size(28, 22);
             this.toolStripLabel1.Text = "&File:";
-            // 
-            // btnLoad
-            // 
-            this.btnLoad.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnLoad.Image = ((System.Drawing.Image)(resources.GetObject("btnLoad.Image")));
-            this.btnLoad.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnLoad.Name = "btnLoad";
-            this.btnLoad.Size = new System.Drawing.Size(23, 22);
-            this.btnLoad.Text = "Load";
-            this.btnLoad.ToolTipText = "Load";
-            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
             // toolStripSeparator1
             // 
@@ -275,7 +262,6 @@ namespace CoyneSolutions.SpeeDiff
         private SynchronizedScrollRichTextBox rtbRight;
         private SynchronizedScrollRichTextBox rtbRightNumbers;
         private ToolStrip toolStrip;
-        private ToolStripButton btnLoad;
         private ToolStripSeparator toolStripSeparator1;
         private ToolStripButton btnUpRevision;
         private ToolStripButton btnDownRevision;

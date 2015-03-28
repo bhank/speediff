@@ -319,11 +319,6 @@ namespace CoyneSolutions.SpeeDiff
             GotoChange(true);
         }
 
-        private void btnLoad_Click(object sender, EventArgs e)
-        {
-            LoadFile(cbxPath.Text);
-        }
-
         private async void LoadFile(string filename)
         {
             ChangeStartPositions.Clear();

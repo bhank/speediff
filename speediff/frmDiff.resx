@@ -121,17 +121,6 @@
     <value>17, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnLoad.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAEISURBVDhPlZC7CsIwFIZ9A30S8RF8B1d9B3F0000XdRcK
-        bg7iVrCggy5d1MFBEG1thyoqpqW3MfaEpjQm9RL4aHM4/3eS5GB5nlcKggBF4BQI6qThl0UlxcYE5ypD
-        XO0vfpdEjb14Kr48bPyXBMLj1QHnayMSeqc73dIrCQEBCcO0vXknRfiHMJwE9ke5KSQRQPNsfWbC8fEJ
-        NnI4GMH7CdKIwkBa0IPp9A2+BSmJIH7IJEgRhdIwVwBOSkvYmAUj0JQ2KXwCBjyvJi/wfV+yNmMuIMJU
-        JV4QhmHZuelccxZ3Y8cKYLmuqxvLAdcsQp93eEF0jfpDU7nmLKydTL6JACFUgM3/BPgFb2b9wUqYs/wA
-        AAAASUVORK5CYII=
-</value>
-  </data>
   <data name="btnDownRevision.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
