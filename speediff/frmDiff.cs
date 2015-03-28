@@ -159,6 +159,7 @@ namespace CoyneSolutions.SpeeDiff
             var settings = Properties.Settings.Default;
             LoadWindowPosition(settings);
             LoadMostRecentlyUsedFiles(settings);
+            AddComboBoxCommands();
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 LoadFile(Environment.GetCommandLineArgs()[1]);
@@ -451,6 +452,11 @@ namespace CoyneSolutions.SpeeDiff
         {
             var mostRecentlyUsedFiles = settings.MostRecentlyUsedFiles.Cast<object>().ToArray();
             cbxPath.Items.AddRange(mostRecentlyUsedFiles);
+        }
+
+        private void AddComboBoxCommands()
+        {
+            cbxPath.Items.Add(new ComboBoxCommand("", () => {}));
             cbxPath.Items.Add(new ComboBoxCommand("Browse...", Browse));
             if (TortoiseSvnHelper.Exists)
             {
