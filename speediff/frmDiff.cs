@@ -31,7 +31,8 @@ namespace CoyneSolutions.SpeeDiff
             numberTextBoxes = new[] {rtbLeftNumbers, rtbRightNumbers};
             ChangeStartPositions = new List<int>();
 
-            rtbLeft.AddPeers(rtbRight, rtbLeftNumbers, rtbRightNumbers);
+            rtbLeft.AddVerticalScrollPeers(rtbRight, rtbLeftNumbers, rtbRightNumbers);
+            rtbLeft.AddHorizontalScrollPeers(rtbRight);
 
             foreach (ISynchronizedScrollTextBox box in allTextBoxes)
             {

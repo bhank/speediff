@@ -15,26 +15,36 @@ namespace CoyneSolutions.SpeeDiff
         // https://gist.github.com/jkingry/593809
         // http://www.codeproject.com/Questions/293542/VB-Net-Custome-RichTextBox-SetScrollPos
 
-        private readonly List<SynchronizedScrollRichTextBox> peers = new List<SynchronizedScrollRichTextBox>();
-
-        public void AddPeer(SynchronizedScrollRichTextBox peer, bool addReversePeer = false)
-        {
-            peers.Add(peer);
-            if (addReversePeer)
-            {
-                peer.peers.Add(this);
-            }
-        }
+        private readonly List<SynchronizedScrollRichTextBox> horizontalScrollPeers = new List<SynchronizedScrollRichTextBox>();
+        private readonly List<SynchronizedScrollRichTextBox> verticalScrollPeers = new List<SynchronizedScrollRichTextBox>();
 
         public void AddPeers(params SynchronizedScrollRichTextBox[] newPeers)
         {
-            peers.AddRange(newPeers);
+            AddHorizontalScrollPeers(newPeers);
+            AddVerticalScrollPeers(newPeers);
+        }
+
+        public void AddVerticalScrollPeers(params SynchronizedScrollRichTextBox[] newPeers)
+        {
+            verticalScrollPeers.AddRange(newPeers);
             foreach (var peer in newPeers)
             {
                 var currentPeer = peer;
-                currentPeer.peers.Add(this);
+                currentPeer.verticalScrollPeers.Add(this);
                 var otherPeers = newPeers.Where(p => p != currentPeer).ToList();
-                currentPeer.peers.AddRange(otherPeers);
+                currentPeer.verticalScrollPeers.AddRange(otherPeers);
+            }
+        }
+
+        public void AddHorizontalScrollPeers(params SynchronizedScrollRichTextBox[] newPeers)
+        {
+            horizontalScrollPeers.AddRange(newPeers);
+            foreach (var peer in newPeers)
+            {
+                var currentPeer = peer;
+                currentPeer.horizontalScrollPeers.Add(this);
+                var otherPeers = newPeers.Where(p => p != currentPeer).ToList();
+                currentPeer.horizontalScrollPeers.AddRange(otherPeers);
             }
         }
 
@@ -97,11 +107,32 @@ namespace CoyneSolutions.SpeeDiff
         protected override void OnVScroll(EventArgs e)
         {
             base.OnVScroll(e);
+            SyncScrollPosition(true);
+        }
+
+        protected override void OnHScroll(EventArgs e)
+        {
+            base.OnHScroll(e);
+            SyncScrollPosition(false);
+        }
+
+        private void SyncScrollPosition(bool vertical)
+        {
             if (!DisableScrollSync)
             {
+                var peers = vertical ? verticalScrollPeers : horizontalScrollPeers;
                 var scrollPosition = ScrollPosition;
                 foreach (var peer in peers)
                 {
+                    var peerPosition = peer.ScrollPosition;
+                    if (vertical)
+                    {
+                        scrollPosition.X = peerPosition.X;
+                    }
+                    else
+                    {
+                        scrollPosition.Y = peerPosition.Y;
+                    }
                     Debug.WriteLine("{0} setting {1} to {2}, {3}", this.Name, peer.Name, scrollPosition.X, scrollPosition.Y);
                     peer.ScrollPosition = scrollPosition;
                 }
