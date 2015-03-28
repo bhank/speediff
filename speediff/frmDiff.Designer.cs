@@ -247,6 +247,7 @@ namespace CoyneSolutions.SpeeDiff
             this.ClientSize = new System.Drawing.Size(944, 596);
             this.Controls.Add(this.splitContainer2);
             this.Controls.Add(this.toolStrip);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmDiff";
             this.Text = "speediff";
             this.toolStrip.ResumeLayout(false);
