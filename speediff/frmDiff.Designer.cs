@@ -198,8 +198,8 @@ namespace CoyneSolutions.SpeeDiff
             this.rtbLeftNumbers.Dock = System.Windows.Forms.DockStyle.Left;
             this.rtbLeftNumbers.Location = new System.Drawing.Point(0, 0);
             this.rtbLeftNumbers.Name = "rtbLeftNumbers";
-            this.rtbLeftNumbers.Size = new System.Drawing.Size(71, 395);
-            this.rtbLeftNumbers.TabIndex = 0;
+            this.rtbLeftNumbers.Size = new System.Drawing.Size(50, 395);
+            this.rtbLeftNumbers.TabStop = false;
             this.rtbLeftNumbers.Text = "";
             // 
             // rtbRight
@@ -216,8 +216,8 @@ namespace CoyneSolutions.SpeeDiff
             this.rtbRightNumbers.Dock = System.Windows.Forms.DockStyle.Left;
             this.rtbRightNumbers.Location = new System.Drawing.Point(0, 0);
             this.rtbRightNumbers.Name = "rtbRightNumbers";
-            this.rtbRightNumbers.Size = new System.Drawing.Size(78, 395);
-            this.rtbRightNumbers.TabIndex = 0;
+            this.rtbRightNumbers.Size = new System.Drawing.Size(50, 395);
+            this.rtbRightNumbers.TabStop = false;
             this.rtbRightNumbers.Text = "";
             // 
             // lvwRevisions
