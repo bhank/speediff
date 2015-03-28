@@ -182,16 +182,16 @@ namespace CoyneSolutions.SpeeDiff
                     leftIndex = index + 1;
                     rightIndex = index;
                 }
-                await Task.Run(() => ShowRevisions(leftIndex, rightIndex));
+                await Task.Run(() => ShowChanges(leftIndex, rightIndex));
                 Debug.WriteLine("Done awaiting.");
             }
         }
 
-        private void ShowRevisions(int leftIndex, int rightIndex)
+        private void ShowChanges(int leftIndex, int rightIndex)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<int,int>(ShowRevisions), leftIndex, rightIndex);
+                Invoke(new Action<int,int>(ShowChanges), leftIndex, rightIndex);
                 return;
             }
             var left = leftIndex == -1 ? string.Empty : revisionProvider.Revisions[leftIndex].GetContent();
@@ -200,6 +200,7 @@ namespace CoyneSolutions.SpeeDiff
             var model = builder.BuildDiffModel(left, right);
             ChangeStartPositions = ModelToTextBox(model.OldText, rtbLeft, rtbLeftNumbers);
             ModelToTextBox(model.NewText, rtbRight, rtbRightNumbers);
+            lblChanges.Text = ChangeStartPositions.Count + " change" + (ChangeStartPositions.Count == 1 ? string.Empty : "s");
         }
 
         private static List<int> ModelToTextBox(DiffPaneModel model, ISynchronizedScrollTextBox textBox, ISynchronizedScrollTextBox lineNumbersTextBox)
@@ -333,6 +334,7 @@ namespace CoyneSolutions.SpeeDiff
                 box.Clear();
             }
             Text = formTitle;
+            lblChanges.Text = string.Empty;
 
             if (string.IsNullOrEmpty(filename))
             {

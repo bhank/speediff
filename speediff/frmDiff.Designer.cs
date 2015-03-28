@@ -48,6 +48,7 @@ namespace CoyneSolutions.SpeeDiff
             this.rtbRightNumbers = new SynchronizedScrollRichTextBox();
             this.lvwRevisions = new ListViewWithSubitemTooltips();
             this.cbxPath = new System.Windows.Forms.ToolStripComboBox();
+            this.lblChanges = new System.Windows.Forms.ToolStripLabel();
             this.toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -69,7 +70,8 @@ namespace CoyneSolutions.SpeeDiff
             this.btnUpRevision,
             this.toolStripSeparator2,
             this.btnPreviousChange,
-            this.btnNextChange});
+            this.btnNextChange,
+            this.lblChanges});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(944, 25);
@@ -227,6 +229,12 @@ namespace CoyneSolutions.SpeeDiff
             this.cbxPath.Name = "cbxPath";
             this.cbxPath.Size = new System.Drawing.Size(300, 25);
             // 
+            // lblChanges
+            // 
+            this.lblChanges.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.lblChanges.Name = "lblChanges";
+            this.lblChanges.Size = new System.Drawing.Size(0, 22);
+            // 
             // frmDiff
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -270,6 +278,7 @@ namespace CoyneSolutions.SpeeDiff
         private ToolStripButton btnNextChange;
         private ToolStripLabel toolStripLabel1;
         private ToolStripComboBox cbxPath;
+        private ToolStripLabel lblChanges;
 
     }
 }
