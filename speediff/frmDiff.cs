@@ -20,8 +20,6 @@ namespace CoyneSolutions.SpeeDiff
         private readonly ISynchronizedScrollTextBox[] allTextBoxes;
         private readonly ISynchronizedScrollTextBox[] numberTextBoxes;
         private readonly ListViewColumnSorter listViewColumnSorter;
-        private const int maxMostRecentlyUsedFiles = 15;
-
         public frmDiff()
         {
             InitializeComponent();
@@ -294,6 +292,12 @@ namespace CoyneSolutions.SpeeDiff
                 case Keys.Alt | Keys.Right:
                     btnUpRevision.PerformClick();
                     break;
+                case Keys.Escape:
+                    if (Config.ExitOnEscapeKey)
+                    {
+                        Close();
+                    }
+                    break;
                 default:
                     return base.ProcessCmdKey(ref msg, keyData);
             }
@@ -456,7 +460,7 @@ namespace CoyneSolutions.SpeeDiff
         private void SaveMostRecentlyUsedFiles()
         {
             Properties.Settings.Default.MostRecentlyUsedFiles.Clear();
-            Properties.Settings.Default.MostRecentlyUsedFiles.AddRange(cbxPath.Items.OfType<string>().Where(s => !string.IsNullOrWhiteSpace(s)).Take(maxMostRecentlyUsedFiles).ToArray());
+            Properties.Settings.Default.MostRecentlyUsedFiles.AddRange(cbxPath.Items.OfType<string>().Where(s => !string.IsNullOrWhiteSpace(s)).Take(Config.MaxMostRecentlyUsedFiles).ToArray());
             Properties.Settings.Default.Save();
         }
 

@@ -1,22 +1,19 @@
 ﻿using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace CoyneSolutions.SpeeDiff
 {
     public static class TortoiseSvnHelper
     {
-        private const string TortoiseProcPath = @"C:\Program Files\TortoiseSVN\bin\TortoiseProc.exe";
-
         public static bool Exists
         {
-            get { return File.Exists(TortoiseProcPath); }
+            get { return File.Exists(Config.TortoiseProcPath); }
         }
 
         public static string GetUrlFromRepoBrowser()
         {
             var tempfile = Path.GetTempFileName();
-            var process = Process.Start(TortoiseProcPath, string.Format("/command:repobrowser /outfile:\"{0}\"", tempfile));
+            var process = Process.Start(Config.TortoiseProcPath, string.Format("/command:repobrowser /outfile:\"{0}\"", tempfile));
             process.WaitForExit();
             if (File.Exists(tempfile))
             {

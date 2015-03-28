@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Entities\ComboBoxCommand.cs" />
+    <Compile Include="Entities\Config.cs" />
     <Compile Include="Entities\ListViewColumnSortOptions.cs" />
     <Compile Include="Entities\ListViewColumnSorter.cs" />
     <Compile Include="Entities\ListViewWithSubitemTooltips.cs">
