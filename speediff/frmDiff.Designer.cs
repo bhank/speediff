@@ -75,7 +75,8 @@ namespace CoyneSolutions.SpeeDiff
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(944, 25);
-            this.toolStrip.TabIndex = 5;
+            this.toolStrip.TabStop = true;
+            this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip1";
             // 
             // toolStripLabel1
@@ -163,7 +164,7 @@ namespace CoyneSolutions.SpeeDiff
             this.splitContainer2.Panel2.Controls.Add(this.lvwRevisions);
             this.splitContainer2.Size = new System.Drawing.Size(944, 571);
             this.splitContainer2.SplitterDistance = 395;
-            this.splitContainer2.TabIndex = 4;
+            this.splitContainer2.TabStop = false;
             // 
             // splitContainer1
             // 
@@ -182,7 +183,7 @@ namespace CoyneSolutions.SpeeDiff
             this.splitContainer1.Panel2.Controls.Add(this.rtbRightNumbers);
             this.splitContainer1.Size = new System.Drawing.Size(944, 395);
             this.splitContainer1.SplitterDistance = 473;
-            this.splitContainer1.TabIndex = 4;
+            this.splitContainer1.TabStop = false;
             // 
             // rtbLeft
             // 
