@@ -313,6 +313,16 @@ namespace CoyneSolutions.SpeeDiff
                         Close();
                     }
                     break;
+                case Keys.Control | Keys.Cancel:
+                    if (Debugger.IsAttached)
+                    {
+                        Debugger.Break();
+                    }
+                    else
+                    {
+                        goto default;
+                    }
+                    break;
                 default:
                     return base.ProcessCmdKey(ref msg, keyData);
             }
