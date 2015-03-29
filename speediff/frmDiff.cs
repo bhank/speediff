@@ -271,10 +271,28 @@ namespace CoyneSolutions.SpeeDiff
             var settings = Properties.Settings.Default;
             LoadWindowPosition(settings);
             LoadMostRecentlyUsedFiles(settings);
+            SetDropdownWidth();
             AddComboBoxCommands();
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 LoadFile(Environment.GetCommandLineArgs()[1]);
+            }
+        }
+
+        private void SetDropdownWidth()
+        {
+            var maxWidth = 0;
+            foreach (var item in cbxPath.Items)
+            {
+                var width = TextRenderer.MeasureText(item.ToString(), cbxPath.Font).Width;
+                if (width > maxWidth)
+                {
+                    maxWidth = width;
+                }
+            }
+            if (maxWidth > 0)
+            {
+                cbxPath.DropDownWidth = maxWidth;
             }
         }
 
@@ -554,6 +572,7 @@ namespace CoyneSolutions.SpeeDiff
             cbxPath.Items.Insert(0, filename);
             cbxPath.Text = filename;
             cbxPath.SelectAll();
+            SetDropdownWidth();
         }
 
         private void btnUpRevision_Click(object sender, EventArgs e)
