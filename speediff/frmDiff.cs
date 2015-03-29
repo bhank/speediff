@@ -71,19 +71,29 @@ namespace CoyneSolutions.SpeeDiff
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
             listViewColumnSorter = new ListViewColumnSorter(lvwRevisions);
 
+            var skipNextSelectionChangeCommitted = false;
             cbxPath.ComboBox.SelectionChangeCommitted += (sender, args) =>
             {
-                if (cbxPath.DroppedDown)
+                if (skipNextSelectionChangeCommitted)
+                {
+                    skipNextSelectionChangeCommitted = false;
+                }
+                else if (cbxPath.DroppedDown)
                 {
                     ComboBoxItemSelected();
                 }
             };
             cbxPath.ComboBox.KeyDown += (sender, args) =>
             {
-                if (args.KeyCode == Keys.Enter && args.Modifiers == Keys.None && !cbxPath.DroppedDown)
+                if (args.KeyCode == Keys.Enter && args.Modifiers == Keys.None)
                 {
                     args.Handled = true;
                     args.SuppressKeyPress = true; // Stop the ding
+                    if (cbxPath.DroppedDown)
+                    {
+                        // Prevent ComboBoxItemSelected from running again in SelectionChangeCommitted
+                        skipNextSelectionChangeCommitted = true;
+                    }
                     ComboBoxItemSelected();
                 }
             };
