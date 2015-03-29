@@ -73,6 +73,7 @@ namespace CoyneSolutions.SpeeDiff
                 }
                 );
             lvwRevisions.ItemSelectionChanged += lvwRevisions_ItemSelectionChanged;
+            lvwRevisions.KeyUp += lvwRevisions_KeyUp;
             listViewColumnSorter = new ListViewColumnSorter(lvwRevisions);
 
             var skipNextSelectionChangeCommitted = false;
@@ -107,10 +108,14 @@ namespace CoyneSolutions.SpeeDiff
             SetUpContextMenu();
         }
 
-        private enum DiffViewer
+        void lvwRevisions_KeyUp(object sender, KeyEventArgs e)
         {
-            TortoiseMerge = -1,
+            if(e.KeyData == Keys.Apps && lvwRevisions.SelectedItems.Count == 1)
+            {
+                contextMenuStrip.Show(lvwRevisions, lvwRevisions.SelectedItems[0].Position);
+            }
         }
+
         private void SetUpContextMenu()
         {
             // Add diff viewers from config
@@ -695,7 +700,7 @@ namespace CoyneSolutions.SpeeDiff
                 {
                     if (contextMenuStrip.Items.Count > 0)
                     {
-                        contextMenuStrip.Show(lvwRevisions.PointToScreen(e.Location));
+                        contextMenuStrip.Show(lvwRevisions, e.Location);
                     }
                 }
             }
