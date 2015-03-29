@@ -157,6 +157,10 @@ namespace CoyneSolutions.SpeeDiff
         {
             Debug.Print("{0} restoring first line {1}, selected line {2}", Name, savedFirstVisibleLineNumber, savedSelectedLineNumber);
             var firstCharIndex = GetFirstCharIndexFromLine(savedFirstVisibleLineNumber);
+            if (firstCharIndex == -1)
+            {
+                firstCharIndex = TextLength; // If we moved to a revision with a smaller file, and we were off the end of it, move to the end of the new revision.
+            }
             SelectionStart = firstCharIndex;
             ScrollToCaret();
             var charIndex = GetFirstCharIndexFromLine(savedSelectedLineNumber);
