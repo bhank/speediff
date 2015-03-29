@@ -31,6 +31,8 @@ namespace CoyneSolutions.SpeeDiff
             numberTextBoxes = new[] {rtbLeftNumbers, rtbRightNumbers};
             ChangeStartPositions = new List<int>();
 
+            rtbLeft.LanguageOption = rtbRight.LanguageOption = RichTextBoxLanguageOptions.DualFont; // Prevent CJK characters from switching the line to SimSun font and making it taller, so it doesn't line up with the line numbers. http://stackoverflow.com/questions/10118117/pasting-cjk-characters-to-a-richtextbox-adds-an-unwanted-second-font/12168388#12168388
+
             rtbLeft.AddVerticalScrollPeers(rtbRight, rtbLeftNumbers, rtbRightNumbers);
             rtbLeft.AddHorizontalScrollPeers(rtbRight);
 
