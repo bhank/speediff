@@ -227,13 +227,14 @@ namespace CoyneSolutions.SpeeDiff
 
             foreach (var line in model.Lines)
             {
-                if (line.Text != null && line.Text.Length > 3500)
+                var isLongLine = line.Text != null && line.Text.Length > 3500; // TODO: use a number based on the current font size
+                var oldPosition = -1;
+                if (isLongLine)
                 {
-                    textBox.EnsureLongLineDoesNotWrap(line.Text);
+                    oldPosition = textBox.GetLastCharTopPosition();
                 }
                 var lineNumber = line.Position.HasValue ? line.Position.ToString() : string.Empty;
                 lineNumbersText.AppendLine(lineNumber);
-                //AppendText(lineNumbersTextBox, lineNumber + Environment.NewLine, Color.Empty);
                 if (line.Type == ChangeType.Unchanged)
                 {
                     inChange = false;
@@ -261,6 +262,17 @@ namespace CoyneSolutions.SpeeDiff
                         }
                     }
                     textBox.AppendText(Environment.NewLine);
+                }
+
+                if (isLongLine)
+                {
+                    // If the textbox wrapped (as it does at a certain width, after about 3511 characters in this font), add space in the line numbers column.
+                    var newPosition = textBox.GetLastCharTopPosition();
+                    var fontHeight = textBox.Font.Height;
+                    for (var i = oldPosition + fontHeight; i < newPosition; i += fontHeight)
+                    {
+                        lineNumbersText.AppendLine();
+                    }
                 }
             }
 

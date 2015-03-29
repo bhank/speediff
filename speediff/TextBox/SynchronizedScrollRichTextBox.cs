@@ -239,5 +239,10 @@ namespace CoyneSolutions.SpeeDiff
                 RightMargin = textWidth;
             }
         }
+
+        public int GetLastCharTopPosition()
+        {
+            return GetPositionFromCharIndex(TextLength).Y;
+        }
     }
 }
