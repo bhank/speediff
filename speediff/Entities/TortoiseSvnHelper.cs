@@ -26,14 +26,29 @@ namespace CoyneSolutions.SpeeDiff
             return null;
         }
 
-        public static string DiffProgram
+        public static string TortoiseMergeProgram
         {
             get { return Path.Combine(Path.GetDirectoryName(Config.TortoiseProcPath), "TortoiseMerge.exe"); }
         }
 
-        public static string DiffParameters
+        public static string TortoiseMergeParameters
         {
             get { return "/base:\"{left}\" /basename:\"{lefttitle}\" /mine:\"{right}\" /minename:\"{righttitle}\" /readonly"; }
+        }
+
+        public static string TortoiseProcProgram
+        {
+            get { return Config.TortoiseProcPath; }
+        }
+
+        public static string LogParameters
+        {
+            get { return "/command:log /path:\"{file}\""; }
+        }
+
+        public static string DiffParameters
+        {
+            get { return "/command:diff /path:\"{file}\" /startrev:{leftrevisionid} /endrev:{rightrevisionid}"; }
         }
     }
 }

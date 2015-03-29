@@ -115,7 +115,10 @@ namespace CoyneSolutions.SpeeDiff
         {
             if (TortoiseSvnHelper.Exists)
             {
-                contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in TortoiseMerge", null, (sender, args) => ViewDiffInExternalApp(TortoiseSvnHelper.DiffProgram, TortoiseSvnHelper.DiffParameters)));
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Diff", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.DiffParameters, false)) { Tag="svn" });
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Log", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.LogParameters, false)) { Tag="svn" });
+                contextMenuStrip.Items.Add(new ToolStripSeparator {Tag = "svn"});
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in TortoiseMerge", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseMergeProgram, TortoiseSvnHelper.TortoiseMergeParameters, false)));
             }
             // Add diff viewers from config
             var i = 1;
@@ -126,7 +129,7 @@ namespace CoyneSolutions.SpeeDiff
                 var parameters = ConfigurationManager.AppSettings["DiffViewer" + i + "Parameters"];
                 if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(program))
                 {
-                    contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in " + name, null, (sender, args) => ViewDiffInExternalApp(program, parameters)));
+                    contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in " + name, null, (sender, args) => RunExternalApp(program, parameters, true)));
                 }
                 else
                 {
@@ -136,7 +139,7 @@ namespace CoyneSolutions.SpeeDiff
             }
         }
 
-        private void ViewDiffInExternalApp(string program, string parameters)
+        private void RunExternalApp(string program, string parameters, bool addLeftAndRightParametersIfMissing)
         {
             int leftIndex, rightIndex;
             if (GetSelectedRevisionIndexes(out leftIndex, out rightIndex))
@@ -144,24 +147,32 @@ namespace CoyneSolutions.SpeeDiff
                 var leftRevision = revisionProvider.Revisions[leftIndex];
                 var rightRevision = revisionProvider.Revisions[rightIndex];
 
-                var leftFile = Path.GetTempFileName();
-                var rightFile = Path.GetTempFileName();
+                if (addLeftAndRightParametersIfMissing && (parameters == null || !parameters.Contains("{left}") && !parameters.Contains("{right}")))
+                {
+                    parameters += " \"{left}\" \"{right}\"";
+                }
+                if (parameters.Contains("{left}") || parameters.Contains("{right}"))
+                {
+                    var leftFile = Path.GetTempFileName();
+                    var rightFile = Path.GetTempFileName();
 
-                File.WriteAllText(leftFile, leftRevision.GetContent());
-                File.WriteAllText(rightFile, rightRevision.GetContent());
+                    File.WriteAllText(leftFile, leftRevision.GetContent());
+                    File.WriteAllText(rightFile, rightRevision.GetContent());
+
+                    parameters = parameters
+                        .Replace("{left}", leftFile)
+                        .Replace("{right}", rightFile);
+                }
 
                 var revisionPrefix = revisionProvider is SvnRevisionProvider ? "r" : string.Empty;
                 var title = string.Format("{0} {1}", Path.GetFileName(loadedFileName), revisionPrefix);
                 var leftTitle = title + leftRevision.RevisionId + " " + leftRevision.RevisionTime;
                 var rightTitle = title + rightRevision.RevisionId + " " + rightRevision.RevisionTime;
 
-                if (parameters == null || !parameters.Contains("{left}") && !parameters.Contains("{right}"))
-                {
-                    parameters += " {left} {right}";
-                }
                 parameters = parameters
-                    .Replace("{left}", leftFile)
-                    .Replace("{right}", rightFile)
+                    .Replace("{file}", loadedFileName)
+                    .Replace("{leftrevisionid}", leftRevision.RevisionId)
+                    .Replace("{rightrevisionid}", rightRevision.RevisionId)
                     .Replace("{lefttitle}", leftTitle)
                     .Replace("{righttitle}", rightTitle);
 
@@ -476,7 +487,16 @@ namespace CoyneSolutions.SpeeDiff
             }
 
             listViewColumnSorter.ColumnSortOptions[0].Numeric = true; // Original order column
-            listViewColumnSorter.ColumnSortOptions[1].Numeric = revisionProvider is SvnRevisionProvider; // Revision number, vs. hash for git
+            var isSvn = revisionProvider is SvnRevisionProvider;
+            listViewColumnSorter.ColumnSortOptions[1].Numeric = isSvn; // Revision number, vs. hash for git
+
+            foreach (ToolStripItem item in contextMenuStrip.Items)
+            {
+                if (item.Tag as string == "svn")
+                {
+                    item.Visible = isSvn;
+                }
+            }
 
             Text = string.Format("{0} - {1}", filename, formTitle);
 
