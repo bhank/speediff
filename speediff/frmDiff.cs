@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,6 +22,8 @@ namespace CoyneSolutions.SpeeDiff
         private readonly ISynchronizedScrollTextBox[] allTextBoxes;
         private readonly ISynchronizedScrollTextBox[] numberTextBoxes;
         private readonly ListViewColumnSorter listViewColumnSorter;
+        private string loadedFileName;
+
         public frmDiff()
         {
             InitializeComponent();
@@ -99,6 +102,47 @@ namespace CoyneSolutions.SpeeDiff
             };
             Load += frmDiff_Load;
             Closing += frmDiff_Closing;
+
+            SetUpContextMenu();
+        }
+
+        private enum DiffViewer
+        {
+            TortoiseMerge = -1,
+        }
+        private void SetUpContextMenu()
+        {
+            if (TortoiseSvnHelper.Exists)
+            {
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in TortoiseMerge", null, (sender, args) => ViewDiffInExternalApp(DiffViewer.TortoiseMerge)));
+            }
+            // Add diff viewers from config
+        }
+
+        private void ViewDiffInExternalApp(DiffViewer diffViewer)
+        {
+            int leftIndex, rightIndex;
+            if (GetSelectedRevisionIndexes(out leftIndex, out rightIndex))
+            {
+                var leftRevision = revisionProvider.Revisions[leftIndex];
+                var rightRevision = revisionProvider.Revisions[rightIndex];
+
+                var leftFile = Path.GetTempFileName();
+                var rightFile = Path.GetTempFileName();
+
+                File.WriteAllText(leftFile, leftRevision.GetContent());
+                File.WriteAllText(rightFile, rightRevision.GetContent());
+
+                var revisionPrefix = revisionProvider is SvnRevisionProvider ? "r" : string.Empty;
+                var title = string.Format("{0} {1}", Path.GetFileName(loadedFileName), revisionPrefix);
+                var leftTitle = title + leftRevision.RevisionId + " " + leftRevision.RevisionTime;
+                var rightTitle = title + rightRevision.RevisionId + " " + rightRevision.RevisionTime;
+
+                if (diffViewer == DiffViewer.TortoiseMerge)
+                {
+                    TortoiseSvnHelper.ViewDiff(leftTitle, leftFile, rightTitle, rightFile);
+                }
+            }
         }
 
         private void ComboBoxItemSelected()
@@ -185,10 +229,20 @@ namespace CoyneSolutions.SpeeDiff
 
         private async void lvwRevisions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            if (e.IsSelected)
+            int leftIndex, rightIndex;
+            if(GetSelectedRevisionIndexes(out leftIndex, out rightIndex))
             {
-                var index = int.Parse(e.Item.Text);
-                int leftIndex, rightIndex;
+                await Task.Run(() => ShowChanges(leftIndex, rightIndex));
+                Debug.WriteLine("Done awaiting.");
+            }
+        }
+
+        private bool GetSelectedRevisionIndexes(out int leftIndex, out int rightIndex)
+        {
+            leftIndex = rightIndex = -1;
+            if (lvwRevisions.SelectedItems.Count == 1)
+            {
+                var index = int.Parse(lvwRevisions.SelectedItems[0].Text);
                 if (index == lvwRevisions.Items.Count - 1)
                 {
                     leftIndex = -1;
@@ -199,9 +253,9 @@ namespace CoyneSolutions.SpeeDiff
                     leftIndex = index + 1;
                     rightIndex = index;
                 }
-                await Task.Run(() => ShowChanges(leftIndex, rightIndex));
-                Debug.WriteLine("Done awaiting.");
+                return true;
             }
+            return false;
         }
 
         private void ShowChanges(int leftIndex, int rightIndex)
@@ -379,6 +433,7 @@ namespace CoyneSolutions.SpeeDiff
             }
             Text = formTitle;
             lblChanges.Text = string.Empty;
+            loadedFileName = null;
 
             if (string.IsNullOrEmpty(filename))
             {
@@ -415,6 +470,7 @@ namespace CoyneSolutions.SpeeDiff
             }).ToArray());
             lvwRevisions.Items[0].Selected = true;
             AddMostRecentlyUsedFilename(filename);
+            loadedFileName = filename;
             rtbRight.Select();
         }
 
@@ -535,6 +591,21 @@ namespace CoyneSolutions.SpeeDiff
         {
             var url = TortoiseSvnHelper.GetUrlFromRepoBrowser();
             LoadFile(url);
+        }
+
+        // http://stackoverflow.com/questions/13437889/showing-a-context-menu-for-an-item-in-a-listview
+        private void lvwRevisions_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (lvwRevisions.FocusedItem.Bounds.Contains(e.Location))
+                {
+                    if (contextMenuStrip.Items.Count > 0)
+                    {
+                        contextMenuStrip.Show(lvwRevisions.PointToScreen(e.Location));
+                    }
+                }
+            }
         }
     }
 }

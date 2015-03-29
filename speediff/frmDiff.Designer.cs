@@ -31,6 +31,7 @@ namespace CoyneSolutions.SpeeDiff
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDiff));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
@@ -49,6 +50,7 @@ namespace CoyneSolutions.SpeeDiff
             this.lvwRevisions = new ListViewWithSubitemTooltips();
             this.cbxPath = new System.Windows.Forms.ToolStripComboBox();
             this.lblChanges = new System.Windows.Forms.ToolStripLabel();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -223,11 +225,17 @@ namespace CoyneSolutions.SpeeDiff
             this.lvwRevisions.TabIndex = 5;
             this.lvwRevisions.UseCompatibleStateImageBehavior = false;
             this.lvwRevisions.View = System.Windows.Forms.View.Details;
+            this.lvwRevisions.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvwRevisions_MouseClick);
             // 
             // cbxPath
             // 
             this.cbxPath.Name = "cbxPath";
             this.cbxPath.Size = new System.Drawing.Size(300, 25);
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(153, 26);
             // 
             // lblChanges
             // 
@@ -279,6 +287,7 @@ namespace CoyneSolutions.SpeeDiff
         private ToolStripLabel toolStripLabel1;
         private ToolStripComboBox cbxPath;
         private ToolStripLabel lblChanges;
+        private ContextMenuStrip contextMenuStrip;
 
     }
 }
