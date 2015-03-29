@@ -118,8 +118,7 @@ namespace CoyneSolutions.SpeeDiff
 
         private void SetUpContextMenu()
         {
-            // Add diff viewers from config
-            const string settingPrefix = "DiffViewer";
+            const string settingPrefix = "ExternalApp";
             var i = 1;
             while (true)
             {
@@ -129,7 +128,7 @@ namespace CoyneSolutions.SpeeDiff
                 var parameters = ConfigurationManager.AppSettings[settingPrefix+ i + "Parameters"];
                 if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(program))
                 {
-                    contextMenuStrip.Items.Add(new ToolStripMenuItem(name, null, (sender, args) => RunExternalApp(program, parameters, true)) {Tag = type});
+                    contextMenuStrip.Items.Add(new ToolStripMenuItem(name, null, (sender, args) => RunExternalApp(program, parameters)) {Tag = type});
                 }
                 else
                 {
@@ -139,14 +138,14 @@ namespace CoyneSolutions.SpeeDiff
             }
             if (TortoiseSvnHelper.Exists)
             {
-                contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in TortoiseMerge", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseMergeProgram, TortoiseSvnHelper.TortoiseMergeParameters, false)));
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in TortoiseMerge", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseMergeProgram, TortoiseSvnHelper.TortoiseMergeParameters)));
                 contextMenuStrip.Items.Add(new ToolStripSeparator {Tag = "svn"});
-                contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Diff", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.DiffParameters, false)) { Tag="svn" });
-                contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Log", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.LogParameters, false)) { Tag="svn" });
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Diff", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.DiffParameters)) { Tag="svn" });
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Log", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.LogParameters)) { Tag="svn" });
             }
         }
 
-        private async void RunExternalApp(string program, string parameters, bool addLeftAndRightParametersIfMissing)
+        private async void RunExternalApp(string program, string parameters)
         {
             int leftIndex, rightIndex;
             if (GetSelectedRevisionIndexes(out leftIndex, out rightIndex))
@@ -154,11 +153,11 @@ namespace CoyneSolutions.SpeeDiff
                 var leftRevision = leftIndex == -1 ? null : revisionProvider.Revisions[leftIndex];
                 var rightRevision = revisionProvider.Revisions[rightIndex];
 
-                if (addLeftAndRightParametersIfMissing && (parameters == null || !parameters.Contains("{left}") && !parameters.Contains("{right}")))
-                {
-                    parameters += " \"{left}\" \"{right}\"";
-                }
                 string leftFile = null, rightFile = null;
+                if (parameters == null)
+                {
+                    parameters = string.Empty;
+                }
                 if (parameters.Contains("{left}") || parameters.Contains("{right}"))
                 {
                     leftFile = Path.GetTempFileName();
