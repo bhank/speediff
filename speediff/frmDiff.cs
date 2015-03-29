@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -114,12 +115,28 @@ namespace CoyneSolutions.SpeeDiff
         {
             if (TortoiseSvnHelper.Exists)
             {
-                contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in TortoiseMerge", null, (sender, args) => ViewDiffInExternalApp(DiffViewer.TortoiseMerge)));
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in TortoiseMerge", null, (sender, args) => ViewDiffInExternalApp(TortoiseSvnHelper.DiffProgram, TortoiseSvnHelper.DiffParameters)));
             }
             // Add diff viewers from config
+            var i = 1;
+            while (true)
+            {
+                var name = ConfigurationManager.AppSettings["DiffViewer" + i + "Name"];
+                var program = ConfigurationManager.AppSettings["DiffViewer" + i + "Program"];
+                var parameters = ConfigurationManager.AppSettings["DiffViewer" + i + "Parameters"];
+                if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(program))
+                {
+                    contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in " + name, null, (sender, args) => ViewDiffInExternalApp(program, parameters)));
+                }
+                else
+                {
+                    break;
+                }
+                i++;
+            }
         }
 
-        private void ViewDiffInExternalApp(DiffViewer diffViewer)
+        private void ViewDiffInExternalApp(string program, string parameters)
         {
             int leftIndex, rightIndex;
             if (GetSelectedRevisionIndexes(out leftIndex, out rightIndex))
@@ -138,10 +155,17 @@ namespace CoyneSolutions.SpeeDiff
                 var leftTitle = title + leftRevision.RevisionId + " " + leftRevision.RevisionTime;
                 var rightTitle = title + rightRevision.RevisionId + " " + rightRevision.RevisionTime;
 
-                if (diffViewer == DiffViewer.TortoiseMerge)
+                if (parameters == null || !parameters.Contains("{left}") && !parameters.Contains("{right}"))
                 {
-                    TortoiseSvnHelper.ViewDiff(leftTitle, leftFile, rightTitle, rightFile);
+                    parameters += " {left} {right}";
                 }
+                parameters = parameters
+                    .Replace("{left}", leftFile)
+                    .Replace("{right}", rightFile)
+                    .Replace("{lefttitle}", leftTitle)
+                    .Replace("{righttitle}", rightTitle);
+
+                Process.Start(program, parameters);
             }
         }
 
