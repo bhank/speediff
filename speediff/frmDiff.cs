@@ -262,6 +262,7 @@ namespace CoyneSolutions.SpeeDiff
 
             foreach (var box in new[] {textBox, lineNumbersTextBox})
             {
+                box.CalculateScrollOffset();
                 box.RestorePosition();
                 box.DisableScrollSync = false;
                 box.StartRepaint();

@@ -50,37 +50,10 @@ namespace CoyneSolutions.SpeeDiff
 
         // This way works-- rapidly messing with the scroll wheel doesn't get it out of sync, and it handles keyboard navigation as well as scroll bar
 
-        [StructLayout(LayoutKind.Sequential)]
-        private struct POINT
-        {
-            public int X;
-            public int Y;
-
-            public POINT(int x, int y)
-            {
-                X = x;
-                Y = y;
-            }
-
-            public POINT(Point pt) : this(pt.X, pt.Y)
-            {
-            }
-
-            public static implicit operator Point(POINT p)
-            {
-                return new Point(p.X, p.Y);
-            }
-
-            public static implicit operator POINT(Point p)
-            {
-                return new POINT(p.X, p.Y);
-            }
-        }
-
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, ref POINT lParam); // http://www.pinvoke.net/default.aspx/user32.SendMessage
+        private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, ref Point lParam); // System.Drawing.Point works the same as a pinvoke-defined POINT
 
         private const UInt32 WM_USER = 0x0400;
         private const UInt32 EM_GETSCROLLPOS = WM_USER + 221;
@@ -88,19 +61,34 @@ namespace CoyneSolutions.SpeeDiff
 
         public bool DisableScrollSync { get; set; }
 
-        private POINT ScrollPosition
+        private Point ScrollPosition
         {
             get
             {
-                var point = new POINT();
+                return RawScrollPosition;
+            }
+            set
+            {
+                var adjustedValue = value;
+                adjustedValue.Y = (int)(adjustedValue.Y * scrollOffset);
+                RawScrollPosition = adjustedValue;
+            }
+        }
+
+        private Point RawScrollPosition
+        {
+            get
+            {
+                var point = new Point();
                 SendMessage(Handle, EM_GETSCROLLPOS, IntPtr.Zero, ref point);
                 return point;
             }
             set
             {
+                var oldDisableScrollSyncValue = DisableScrollSync;
                 DisableScrollSync = true;
                 SendMessage(Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref value);
-                DisableScrollSync = false;
+                DisableScrollSync = oldDisableScrollSyncValue;
             }
         }
 
@@ -133,26 +121,47 @@ namespace CoyneSolutions.SpeeDiff
                     {
                         scrollPosition.Y = peerPosition.Y;
                     }
-                    Debug.WriteLine("{0} setting {1} to {2}, {3}", this.Name, peer.Name, scrollPosition.X, scrollPosition.Y);
+                    Debug.WriteLine("{0} setting {1} to {2}, {3}", Name, peer.Name, scrollPosition.X, scrollPosition.Y);
                     peer.ScrollPosition = scrollPosition;
                 }
             }
         }
 
-        private POINT savedScrollPosition;
+        private double scrollOffset = 1;
+        public void CalculateScrollOffset()
+        {
+            scrollOffset = 1;
+            Debug.Print("{0} CalculateScrollOffset", Name);
+            SelectionStart = TextLength;
+            ScrollToCaret();
+            Debug.Print("{0} scrolled to caret: {1}, {2}", Name, RawScrollPosition.X, RawScrollPosition.Y);
+            var yPos = RawScrollPosition.Y;
+            ScrollPosition = new Point(0, yPos);
+            Debug.Print("{0} scrolled to {1}: {2}, {3}", Name, yPos, RawScrollPosition.X, RawScrollPosition.Y);
+            scrollOffset = (double) yPos/RawScrollPosition.Y;
+            Debug.Print("{0} scrollOffset = {1}", Name, scrollOffset);
+        }
+
+        private int savedFirstVisibleLineNumber;
         private int savedSelectedLineNumber;
         public void SavePosition()
         {
-            savedScrollPosition = ScrollPosition;
+            var firstCharIndex = GetCharIndexFromPosition(new Point(0, Font.Height/2)); // At 0,0 we might be on the previous line. Could be on the previous line even further down, if we have scrolled halfway between lines. Looking half the font size down seems reasonable.
+            var firstLine = GetLineFromCharIndex(firstCharIndex);
+            savedFirstVisibleLineNumber = firstLine;
             savedSelectedLineNumber = GetLineFromCharIndex(SelectionStart);
+            Debug.Print("{0} saved first line {1}, selected line {2}", Name, savedFirstVisibleLineNumber, savedSelectedLineNumber);
         }
 
         public void RestorePosition()
         {
+            Debug.Print("{0} restoring first line {1}, selected line {2}", Name, savedFirstVisibleLineNumber, savedSelectedLineNumber);
+            var firstCharIndex = GetFirstCharIndexFromLine(savedFirstVisibleLineNumber);
+            SelectionStart = firstCharIndex;
+            ScrollToCaret();
             var charIndex = GetFirstCharIndexFromLine(savedSelectedLineNumber);
             if (charIndex == -1) charIndex = 0;
             SelectionStart = charIndex;
-            ScrollPosition = savedScrollPosition;
         }
 
         #region Disable repainting
