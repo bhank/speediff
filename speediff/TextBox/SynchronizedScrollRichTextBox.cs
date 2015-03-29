@@ -230,5 +230,14 @@ namespace CoyneSolutions.SpeeDiff
             SelectionBackColor = BackColor;
 
         }
+
+        public void EnsureLongLineDoesNotWrap(string line)
+        {
+            var textWidth = TextRenderer.MeasureText(line, Font).Width;
+            if (textWidth > RightMargin)
+            {
+                RightMargin = textWidth;
+            }
+        }
     }
 }

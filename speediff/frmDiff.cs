@@ -227,6 +227,10 @@ namespace CoyneSolutions.SpeeDiff
 
             foreach (var line in model.Lines)
             {
+                if (line.Text != null && line.Text.Length > 3500)
+                {
+                    textBox.EnsureLongLineDoesNotWrap(line.Text);
+                }
                 var lineNumber = line.Position.HasValue ? line.Position.ToString() : string.Empty;
                 lineNumbersText.AppendLine(lineNumber);
                 //AppendText(lineNumbersTextBox, lineNumber + Environment.NewLine, Color.Empty);

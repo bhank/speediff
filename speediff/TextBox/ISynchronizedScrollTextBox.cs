@@ -21,5 +21,6 @@ namespace CoyneSolutions.SpeeDiff
         void RestorePosition();
         void Clear();
         void CalculateScrollOffset();
+        void EnsureLongLineDoesNotWrap(string line);
     }
 }
