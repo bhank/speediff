@@ -89,7 +89,6 @@ namespace CoyneSolutions.SpeeDiff
             // 
             // toolStripSeparator1
             // 
-            this.toolStripSeparator1.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
             // 
@@ -115,7 +114,6 @@ namespace CoyneSolutions.SpeeDiff
             // 
             // toolStripSeparator2
             // 
-            this.toolStripSeparator2.Margin = new System.Windows.Forms.Padding(20, 0, 20, 0);
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(6, 25);
             // 
