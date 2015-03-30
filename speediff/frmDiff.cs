@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -18,7 +19,7 @@ namespace CoyneSolutions.SpeeDiff
 {
     public partial class frmDiff : Form
     {
-        private const string formTitle = "speediff";
+        private string formTitle;
         private IRevisionProvider revisionProvider;
         private readonly ISynchronizedScrollTextBox[] allTextBoxes;
         private readonly ISynchronizedScrollTextBox[] numberTextBoxes;
@@ -27,6 +28,7 @@ namespace CoyneSolutions.SpeeDiff
 
         public frmDiff()
         {
+            formTitle = "speediff " + GetVersion();
             InitializeComponent();
 
             Text = formTitle;
@@ -106,6 +108,12 @@ namespace CoyneSolutions.SpeeDiff
             Closing += frmDiff_Closing;
 
             SetUpContextMenu();
+        }
+
+        private string GetVersion()
+        {
+            var version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+            return string.Format("{0}.{1}", version.FileMajorPart, version.FileMinorPart);
         }
 
         void lvwRevisions_KeyUp(object sender, KeyEventArgs e)
