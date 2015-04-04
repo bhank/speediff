@@ -90,7 +90,7 @@ namespace CoyneSolutions.SpeeDiff
 
             if (path.Contains("://")) return false;
 
-            var startingDirectory = new DirectoryInfo(GetExactPathName(path)); // Correct the case of the file, so we can find it in Git's tree
+            var startingDirectory = new DirectoryInfo(path); // The path needs to be the exact case that it is on disk
             if (!startingDirectory.Exists && (startingDirectory.Parent == null || !startingDirectory.Parent.Exists)) // startingDirectory should be a file, not a directory, so it won't exist, but its parent will.
             {
                 return false;
@@ -120,26 +120,6 @@ namespace CoyneSolutions.SpeeDiff
                 currentDirectory = currentDirectory.Parent;
             }
             return false;
-        }
-
-        // http://stackoverflow.com/questions/325931/getting-actual-file-name-with-proper-casing-on-windows-with-net
-        private static string GetExactPathName(string pathName)
-        {
-            if (!(File.Exists(pathName) || Directory.Exists(pathName)))
-                return pathName;
-
-            var di = new DirectoryInfo(pathName);
-
-            if (di.Parent != null)
-            {
-                return System.IO.Path.Combine(
-                    GetExactPathName(di.Parent.FullName),
-                    di.Parent.GetFileSystemInfos(di.Name)[0].Name);
-            }
-            else
-            {
-                return di.Name.ToUpper();
-            }
         }
     }
 }

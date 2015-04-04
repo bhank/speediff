@@ -517,10 +517,16 @@ namespace CoyneSolutions.SpeeDiff
             lblChanges.Text = string.Empty;
             loadedFileName = null;
 
-            if (string.IsNullOrEmpty(filename))
+            if (string.IsNullOrWhiteSpace(filename))
             {
                 BeginInvoke(new Action(() => cbxPath.Text = string.Empty)); // Need to invoke in case the combo box selection is changing, since in that case any text I set here will get overwritten.
                 return;
+            }
+
+            filename = filename.Trim().Trim('"');
+            if (!filename.Contains("://"))
+            {
+                filename = GetExactPathName(filename);
             }
 
             try
@@ -577,6 +583,26 @@ namespace CoyneSolutions.SpeeDiff
             AddMostRecentlyUsedFilename(filename);
             loadedFileName = filename;
             rtbRight.Select();
+        }
+
+        // http://stackoverflow.com/questions/325931/getting-actual-file-name-with-proper-casing-on-windows-with-net
+        private static string GetExactPathName(string pathName)
+        {
+            if (!(File.Exists(pathName) || Directory.Exists(pathName)))
+                return pathName;
+
+            var di = new DirectoryInfo(pathName);
+
+            if (di.Parent != null)
+            {
+                return Path.Combine(
+                    GetExactPathName(di.Parent.FullName),
+                    di.Parent.GetFileSystemInfos(di.Name)[0].Name);
+            }
+            else
+            {
+                return di.Name.ToUpper();
+            }
         }
 
         private void AddMostRecentlyUsedFilename(string filename)
