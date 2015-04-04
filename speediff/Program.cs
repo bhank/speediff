@@ -19,7 +19,7 @@
 // DONE // Add form icon
 // DONE // Shrink line number columns
 // DONE // Maybe ding when you try to go to the next/previous change when there is none, or the next/previous revision
-// Add binary release to github
+// Add binary release to github https://help.github.com/articles/creating-releases/
 // Deal with authentication?
 // Limit revisions loaded, for speed?
 // DONE // Fix horizontal scroll sync to refresh properly -- and don't sync it to the line number textboxes
@@ -45,6 +45,11 @@
 // BugzID link
 // DONE // Widen dropdown
 // Show only the first line of the description in the listview, or else put a space between lines
+// Get rid of "is SvnRevisionProvider" / "is GitRevisionProvider" checks
+// DONE // SVN load fails if the case of the path is wrong?!
+// Add Find in textboxes! Maybe using search box on toolbar
+// Maybe add a filter textbox for the revision list, like Tortoise
+// Somehow prevent imaginary lines from being copied to the clipboard... maybe handle WM_COPY?
 
 using System;
 using System.Windows.Forms;
