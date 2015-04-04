@@ -20,7 +20,7 @@ namespace CoyneSolutions.SpeeDiff
     public partial class frmDiff : Form
     {
         private string formTitle;
-        private IRevisionProvider revisionProvider;
+        private RevisionProvider revisionProvider;
         private readonly ISynchronizedScrollTextBox[] allTextBoxes;
         private readonly ISynchronizedScrollTextBox[] numberTextBoxes;
         private readonly ListViewColumnSorter listViewColumnSorter;
@@ -183,8 +183,7 @@ namespace CoyneSolutions.SpeeDiff
                         .Replace("{right}", rightFile);
                 }
 
-                var revisionPrefix = revisionProvider is SvnRevisionProvider ? "r" : string.Empty;
-                var title = string.Format("{0} {1}", Path.GetFileName(loadedFileName), revisionPrefix);
+                var title = string.Format("{0} {1}", Path.GetFileName(loadedFileName), revisionProvider.RevisionPrefix);
                 var leftTitle = " ";
                 if (leftRevision != null)
                 {
@@ -539,11 +538,8 @@ namespace CoyneSolutions.SpeeDiff
                 return;
             }
 
-            var isSvn = revisionProvider is SvnRevisionProvider;
-            var isGit = revisionProvider is GitRevisionProvider;
-
             listViewColumnSorter.ColumnSortOptions[0].Numeric = true; // Original order column
-            listViewColumnSorter.ColumnSortOptions[1].Numeric = isSvn; // Revision number, vs. hash for git
+            listViewColumnSorter.ColumnSortOptions[1].Numeric = revisionProvider.IsRevisionIdNumeric;
 
             foreach (ToolStripItem item in contextMenuStrip.Items)
             {
@@ -554,14 +550,7 @@ namespace CoyneSolutions.SpeeDiff
                 }
                 else
                 {
-                    if (isSvn)
-                    {
-                        item.Visible = tag.Contains("svn");
-                    }
-                    if (isGit)
-                    {
-                        item.Visible = tag.Contains("git");
-                    }
+                    item.Visible = revisionProvider.MatchesSourceControlTypeId(tag);
                 }
             }
 

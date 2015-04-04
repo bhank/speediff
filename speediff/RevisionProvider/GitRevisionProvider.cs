@@ -7,25 +7,32 @@ using LibGit2Sharp;
 
 namespace CoyneSolutions.SpeeDiff
 {
-    public class GitRevisionProvider : IRevisionProvider
+    public class GitRevisionProvider : RevisionProvider
     {
         internal GitRevisionProvider(string path)
         {
             Path = path;
         }
 
-        public string Path { get; private set; }
-        public IList<Revision> Revisions { get; private set; }
+        public override string RevisionPrefix
+        {
+            get { return string.Empty; }
+        }
 
-        public async Task Initialize()
+        public override async Task Initialize()
         {
             await Task.Run(() => LoadRevisions(Path));
         }
 
-        public async Task<IList<Revision>> LoadRevisions()
+        public override async Task<IList<Revision>> LoadRevisions()
         {
             await Initialize();
             return Revisions;
+        }
+
+        public override bool IsRevisionIdNumeric
+        {
+            get { return false; }
         }
 
         private void LoadRevisions(string path)
@@ -120,6 +127,11 @@ namespace CoyneSolutions.SpeeDiff
                 currentDirectory = currentDirectory.Parent;
             }
             return false;
+        }
+
+        protected override string SourceControlTypeId
+        {
+            get { return "git"; }
         }
     }
 }

@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using LibGit2Sharp;
 using SharpSvn;
 
 namespace CoyneSolutions.SpeeDiff
 {
-    public class SvnRevisionProvider : IRevisionProvider
+    public class SvnRevisionProvider : RevisionProvider
     {
         internal SvnRevisionProvider(string path)
         {
             Path = path;
         }
 
-        public string Path { get; private set; }
         private SvnClient svnClient = new SvnClient();
-        public IList<Revision> Revisions { get; private set; }
+
+        public override string RevisionPrefix
+        {
+            get { return "r"; }
+        }
 
         /// <summary>
         /// Quickly check whether this might be an SVN repo.
@@ -29,15 +29,20 @@ namespace CoyneSolutions.SpeeDiff
             return path.Contains("://") || (new SvnClient()).GetUriFromWorkingCopy(path) != null;
         }
 
-        async public Task Initialize()
+        public override async Task Initialize()
         {
             await Task.Run(() => LoadRevisions(Path));
         }
 
-        public async Task<IList<Revision>> LoadRevisions()
+        public override async Task<IList<Revision>> LoadRevisions()
         {
             await Initialize();
             return Revisions;
+        }
+
+        public override bool IsRevisionIdNumeric
+        {
+            get { return true; }
         }
 
         private async void LoadRevisions(string path)
@@ -70,6 +75,11 @@ namespace CoyneSolutions.SpeeDiff
 
                 Revisions.Insert(0,revision); // Put them in newest-to-oldest order
             });
+        }
+
+        protected override string SourceControlTypeId
+        {
+            get { return "svn"; }
         }
     }
 }

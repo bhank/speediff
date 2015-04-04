@@ -86,7 +86,6 @@
     </Compile>
     <Compile Include="Entities\RevisionLoadedEventArgs.cs" />
     <Compile Include="Entities\Revision.cs" />
-    <Compile Include="RevisionProvider\IRevisionProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="RevisionProvider\RevisionProvider.cs" />
     <Compile Include="RevisionProvider\SvnRevisionProvider.cs" />
