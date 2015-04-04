@@ -148,6 +148,7 @@ namespace CoyneSolutions.SpeeDiff
             {
                 contextMenuStrip.Items.Add(new ToolStripMenuItem("View diff in TortoiseMerge", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseMergeProgram, TortoiseSvnHelper.TortoiseMergeParameters)));
                 contextMenuStrip.Items.Add(new ToolStripSeparator {Tag = "svn"});
+                contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Blame", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.BlameParameters)) { Tag="svn" });
                 contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Diff", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.DiffParameters)) { Tag="svn" });
                 contextMenuStrip.Items.Add(new ToolStripMenuItem("TortoiseSVN Log", null, (sender, args) => RunExternalApp(TortoiseSvnHelper.TortoiseProcProgram, TortoiseSvnHelper.LogParameters)) { Tag="svn" });
             }

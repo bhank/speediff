@@ -50,5 +50,10 @@ namespace CoyneSolutions.SpeeDiff
         {
             get { return "/command:diff /path:\"{file}\" /startrev:{leftrevisionid} /endrev:{rightrevisionid}"; }
         }
+
+        public static string BlameParameters
+        {
+            get { return "/command:blame /path:\"{file}\" /startrev:1 /endrev:{rightrevisionid}"; }
+        }
     }
 }
