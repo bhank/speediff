@@ -498,6 +498,11 @@ namespace CoyneSolutions.SpeeDiff
             
         }
 
+        private void btnFindText_Click(object sender, EventArgs e)
+        {
+            ShowFindDialog();
+        }
+
         private FindDialog findDialog;
         private void ShowFindDialog()
         {

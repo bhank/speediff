@@ -51,6 +51,8 @@ namespace CoyneSolutions.SpeeDiff
             this.cbxPath = new System.Windows.Forms.ToolStripComboBox();
             this.lblChanges = new System.Windows.Forms.ToolStripLabel();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.btnFindText = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
@@ -68,6 +70,8 @@ namespace CoyneSolutions.SpeeDiff
             this.toolStripLabel1,
             this.cbxPath,
             this.toolStripSeparator1,
+            this.btnFindText,
+            this.toolStripSeparator3,
             this.btnDownRevision,
             this.btnUpRevision,
             this.toolStripSeparator2,
@@ -243,6 +247,21 @@ namespace CoyneSolutions.SpeeDiff
             this.lblChanges.Name = "lblChanges";
             this.lblChanges.Size = new System.Drawing.Size(0, 22);
             // 
+            // btnFindText
+            // 
+            this.btnFindText.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnFindText.Image = ((System.Drawing.Image)(resources.GetObject("btnFindText.Image")));
+            this.btnFindText.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnFindText.Name = "btnFindText";
+            this.btnFindText.Size = new System.Drawing.Size(23, 22);
+            this.btnFindText.Text = "Find Text (Ctrl-F)";
+            this.btnFindText.Click += new System.EventHandler(this.btnFindText_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+            // 
             // frmDiff
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -288,6 +307,8 @@ namespace CoyneSolutions.SpeeDiff
         private ToolStripComboBox cbxPath;
         private ToolStripLabel lblChanges;
         private ContextMenuStrip contextMenuStrip;
+        private ToolStripButton btnFindText;
+        private ToolStripSeparator toolStripSeparator3;
 
     }
 }
