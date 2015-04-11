@@ -8,5 +8,6 @@ namespace CoyneSolutions.SpeeDiff
         public bool UseRegularExpressions { get; set; }
         public bool SearchLeft { get; set; }
         public bool SearchRight { get; set; }
+        public bool CaseSensitive { get; set; }
     }
 }

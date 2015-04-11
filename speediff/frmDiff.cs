@@ -520,11 +520,11 @@ namespace CoyneSolutions.SpeeDiff
             var found = false;
             if (e.SearchLeft)
             {
-                found = FindInTextBox(rtbLeft, e.Text, e.UseRegularExpressions);
+                found = FindInTextBox(rtbLeft, e.Text, e.UseRegularExpressions, e.CaseSensitive);
             }
             if (e.SearchRight && !found)
             {
-                found = FindInTextBox(rtbRight, e.Text, e.UseRegularExpressions);
+                found = FindInTextBox(rtbRight, e.Text, e.UseRegularExpressions, e.CaseSensitive);
             }
 
             if (!found)
@@ -543,10 +543,10 @@ namespace CoyneSolutions.SpeeDiff
             }
         }
 
-        private bool FindInTextBox(SynchronizedScrollRichTextBox richTextBox, string text, bool useRegularExpressions)
+        private bool FindInTextBox(SynchronizedScrollRichTextBox richTextBox, string text, bool useRegularExpressions, bool caseSensitive)
         {
             var start = richTextBox.SelectionStart;
-            if (string.Equals(richTextBox.SelectedText, text, StringComparison.InvariantCultureIgnoreCase) || useRegularExpressions && Regex.IsMatch(richTextBox.SelectedText, text))
+            if (string.Equals(richTextBox.SelectedText, text, StringComparison.InvariantCultureIgnoreCase) || useRegularExpressions && Regex.IsMatch(richTextBox.SelectedText, text, caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase))
             {
                 start++;
             }
@@ -555,7 +555,7 @@ namespace CoyneSolutions.SpeeDiff
 
             if (useRegularExpressions)
             {
-                var match = Regex.Match(richTextBox.Text.Substring(start), text); // TODO: doing this substring could cause it to match in the middle of a word or something incorrectly... fix it!
+                var match = Regex.Match(richTextBox.Text.Substring(start), text, caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase); // TODO: doing this substring could cause it to match in the middle of a word or something incorrectly... fix it!
                 if (match.Success)
                 {
                     position = start + match.Index;
@@ -569,7 +569,7 @@ namespace CoyneSolutions.SpeeDiff
             }
             else
             {
-                position = richTextBox.Find(text, start, RichTextBoxFinds.None);
+                position = richTextBox.Find(text, start, caseSensitive ? RichTextBoxFinds.MatchCase : RichTextBoxFinds.None);
             }
 
             return position > -1;

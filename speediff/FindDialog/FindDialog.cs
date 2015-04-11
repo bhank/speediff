@@ -30,6 +30,7 @@ namespace CoyneSolutions.SpeeDiff
                 UseRegularExpressions = chkUseRegularExpressions.Checked,
                 SearchLeft = rbLeft.Checked || rbBoth.Checked,
                 SearchRight = rbRight.Checked || rbBoth.Checked,
+                CaseSensitive = chkCaseSensitive.Checked,
             });
         }
 
