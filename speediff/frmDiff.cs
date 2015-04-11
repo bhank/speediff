@@ -517,17 +517,17 @@ namespace CoyneSolutions.SpeeDiff
 
         void findDialog_Find(FindEventArgs e)
         {
-            var found = false;
+            var stop = false;
             if (e.SearchLeft)
             {
-                found = FindInTextBox(rtbLeft, e.Text, e.UseRegularExpressions, e.CaseSensitive);
+                stop = FindInTextBox(rtbLeft, e.Text, e.UseRegularExpressions, e.CaseSensitive);
             }
-            if (e.SearchRight && !found)
+            if (e.SearchRight && !stop)
             {
-                found = FindInTextBox(rtbRight, e.Text, e.UseRegularExpressions, e.CaseSensitive);
+                stop = FindInTextBox(rtbRight, e.Text, e.UseRegularExpressions, e.CaseSensitive);
             }
 
-            if (!found)
+            if (!stop)
             {
                 MessageBox.Show("No more matches.", formTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 
@@ -545,8 +545,23 @@ namespace CoyneSolutions.SpeeDiff
 
         private bool FindInTextBox(SynchronizedScrollRichTextBox richTextBox, string text, bool useRegularExpressions, bool caseSensitive)
         {
+            Regex regex = null;
+            if (useRegularExpressions)
+            {
+
+                try
+                {
+                    regex = new Regex(text, caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
+                }
+                catch (ArgumentException)
+                {
+                    MessageBox.Show("Regular expression is invalid.", formTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return true;
+                }
+            }
+
             var start = richTextBox.SelectionStart;
-            if (string.Equals(richTextBox.SelectedText, text, StringComparison.InvariantCultureIgnoreCase) || useRegularExpressions && Regex.IsMatch(richTextBox.SelectedText, text, caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase))
+            if (string.Equals(richTextBox.SelectedText, text, StringComparison.InvariantCultureIgnoreCase) || useRegularExpressions && regex.IsMatch(richTextBox.SelectedText))
             {
                 start++;
             }
@@ -555,10 +570,20 @@ namespace CoyneSolutions.SpeeDiff
 
             if (useRegularExpressions)
             {
-                var match = Regex.Match(richTextBox.Text.Substring(start), text, caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase); // TODO: doing this substring could cause it to match in the middle of a word or something incorrectly... fix it!
+                
+                try
+                {
+                    regex = new Regex(text, caseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
+                }
+                catch (ArgumentException)
+                {
+                    MessageBox.Show("Regular expression is invalid.", formTitle, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return true;
+                }
+                var match = regex.Match(richTextBox.Text, start);
                 if (match.Success)
                 {
-                    position = start + match.Index;
+                    position = match.Index;
                     richTextBox.SelectionStart = position;
                     richTextBox.SelectionLength = match.Length;
                 }
