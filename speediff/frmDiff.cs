@@ -515,6 +515,7 @@ namespace CoyneSolutions.SpeeDiff
             findDialog.TopMost = true;
         }
 
+        private string lastSuccessfulSearch = null;
         void findDialog_Find(FindEventArgs e)
         {
             var stop = false;
@@ -527,18 +528,38 @@ namespace CoyneSolutions.SpeeDiff
                 stop = FindInTextBox(rtbRight, e.Text, e.UseRegularExpressions, e.CaseSensitive);
             }
 
-            if (!stop)
+            if (stop)
             {
-                MessageBox.Show("No more matches.", formTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                lastSuccessfulSearch = e.Text;
+            }
+            else
+            {
+                if (lastSuccessfulSearch == e.Text)
+                {
+                    MessageBox.Show("No more matches found; restarting from the top.", formTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
 
-                // TODO: Don't jump to the top here like this... let them keep looking at the current search result. If they do another search without moving their selection, then maybe do this...
-                if (e.SearchLeft)
-                {
-                    rtbLeft.SelectionStart = 0;
+                    if (e.SearchLeft)
+                    {
+                        rtbLeft.SelectionStart = 0;
+                    }
+                    if (e.SearchRight)
+                    {
+                        rtbRight.SelectionStart = 0;
+                    }
+
+                    if (e.SearchLeft)
+                    {
+                        stop = FindInTextBox(rtbLeft, e.Text, e.UseRegularExpressions, e.CaseSensitive);
+                    }
+                    if (e.SearchRight && !stop)
+                    {
+                        stop = FindInTextBox(rtbRight, e.Text, e.UseRegularExpressions, e.CaseSensitive);
+                    }
                 }
-                if (e.SearchRight)
+
+                if (!stop)
                 {
-                    rtbRight.SelectionStart = 0;
+                    MessageBox.Show("No matches found.", formTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 }
             }
         }
@@ -621,6 +642,7 @@ namespace CoyneSolutions.SpeeDiff
             Text = formTitle;
             lblChanges.Text = string.Empty;
             loadedFileName = null;
+            lastSuccessfulSearch = null;
 
             if (string.IsNullOrWhiteSpace(filename))
             {
