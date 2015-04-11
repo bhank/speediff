@@ -45,11 +45,14 @@
 // BugzID link
 // DONE // Widen dropdown
 // Show only the first line of the description in the listview, or else put a space between lines
-// Get rid of "is SvnRevisionProvider" / "is GitRevisionProvider" checks
+// DONE // Get rid of "is SvnRevisionProvider" / "is GitRevisionProvider" checks
 // DONE // SVN load fails if the case of the path is wrong?!
-// Add Find in textboxes! Maybe using search box on toolbar
+// DONE // Add Find in textboxes! Maybe using search box on toolbar
+// Add Find toolbar button
+// Maybe add a dropdown in the Find box for recent searches
 // Maybe add a filter textbox for the revision list, like Tortoise
 // Somehow prevent imaginary lines from being copied to the clipboard... maybe handle WM_COPY?
+
 
 using System;
 using System.Windows.Forms;

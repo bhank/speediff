@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CoyneSolutions.SpeeDiff.Properties;
@@ -459,6 +460,9 @@ namespace CoyneSolutions.SpeeDiff
         {
             switch (keyData)
             {
+                case Keys.Control | Keys.F:
+                    ShowFindDialog();
+                    break;
                 case Keys.Control | Keys.Up:
                     btnPreviousChange.PerformClick();
                     break;
@@ -492,6 +496,78 @@ namespace CoyneSolutions.SpeeDiff
             }
             return true; // Prevent default handling, like for Ctrl-Up and down in textboxes: http://stackoverflow.com/questions/18366787/stop-a-key-from-firing-an-event-in-c-sharp-using-processcmdkey
             
+        }
+
+        private FindDialog findDialog;
+        private void ShowFindDialog()
+        {
+            if (findDialog == null)
+            {
+                findDialog = new FindDialog();
+                findDialog.Find += findDialog_Find;
+            }
+            findDialog.Show();
+            findDialog.TopMost = true;
+        }
+
+        void findDialog_Find(FindEventArgs e)
+        {
+            var found = false;
+            if (e.SearchLeft)
+            {
+                found = FindInTextBox(rtbLeft, e.Text, e.UseRegularExpressions);
+            }
+            if (e.SearchRight && !found)
+            {
+                found = FindInTextBox(rtbRight, e.Text, e.UseRegularExpressions);
+            }
+
+            if (!found)
+            {
+                MessageBox.Show("No more matches.", formTitle, MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+
+                // TODO: Don't jump to the top here like this... let them keep looking at the current search result. If they do another search without moving their selection, then maybe do this...
+                if (e.SearchLeft)
+                {
+                    rtbLeft.SelectionStart = 0;
+                }
+                if (e.SearchRight)
+                {
+                    rtbRight.SelectionStart = 0;
+                }
+            }
+        }
+
+        private bool FindInTextBox(SynchronizedScrollRichTextBox richTextBox, string text, bool useRegularExpressions)
+        {
+            var start = richTextBox.SelectionStart;
+            if (string.Equals(richTextBox.SelectedText, text, StringComparison.InvariantCultureIgnoreCase) || useRegularExpressions && Regex.IsMatch(richTextBox.SelectedText, text))
+            {
+                start++;
+            }
+
+            int position;
+
+            if (useRegularExpressions)
+            {
+                var match = Regex.Match(richTextBox.Text.Substring(start), text); // TODO: doing this substring could cause it to match in the middle of a word or something incorrectly... fix it!
+                if (match.Success)
+                {
+                    position = start + match.Index;
+                    richTextBox.SelectionStart = position;
+                    richTextBox.SelectionLength = match.Length;
+                }
+                else
+                {
+                    position = -1;
+                }
+            }
+            else
+            {
+                position = richTextBox.Find(text, start, RichTextBoxFinds.None);
+            }
+
+            return position > -1;
         }
 
         private void btnPreviousChange_Click(object sender, EventArgs e)

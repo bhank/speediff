@@ -58,6 +58,13 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FindDialog\FindDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FindDialog\FindDialog.Designer.cs">
+      <DependentUpon>FindDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FindDialog\FindEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\ComboBoxCommand.cs" />
     <Compile Include="Entities\Config.cs" />
@@ -93,6 +100,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TextBox\ISynchronizedScrollTextBox.cs" />
+    <EmbeddedResource Include="FindDialog\FindDialog.resx">
+      <DependentUpon>FindDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmDiff.resx">
       <DependentUpon>frmDiff.cs</DependentUpon>
     </EmbeddedResource>

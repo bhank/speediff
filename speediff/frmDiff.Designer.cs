@@ -184,6 +184,7 @@ namespace CoyneSolutions.SpeeDiff
             this.rtbLeft.Size = new System.Drawing.Size(402, 395);
             this.rtbLeft.TabIndex = 3;
             this.rtbLeft.Text = "";
+            this.rtbLeft.HideSelection = false;
             // 
             // rtbLeftNumbers
             // 
@@ -193,6 +194,7 @@ namespace CoyneSolutions.SpeeDiff
             this.rtbLeftNumbers.Size = new System.Drawing.Size(50, 395);
             this.rtbLeftNumbers.TabStop = false;
             this.rtbLeftNumbers.Text = "";
+            this.rtbRight.HideSelection = false;
             // 
             // rtbRight
             // 
