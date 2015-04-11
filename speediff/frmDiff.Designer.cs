@@ -35,21 +35,21 @@ namespace CoyneSolutions.SpeeDiff
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDiff));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
+            this.cbxPath = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.btnUpRevision = new System.Windows.Forms.ToolStripButton();
             this.btnDownRevision = new System.Windows.Forms.ToolStripButton();
+            this.btnUpRevision = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.btnPreviousChange = new System.Windows.Forms.ToolStripButton();
             this.btnNextChange = new System.Windows.Forms.ToolStripButton();
+            this.lblChanges = new System.Windows.Forms.ToolStripLabel();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.rtbLeft = new SynchronizedScrollRichTextBox();
-            this.rtbLeftNumbers = new SynchronizedScrollRichTextBox();
-            this.rtbRight = new SynchronizedScrollRichTextBox();
-            this.rtbRightNumbers = new SynchronizedScrollRichTextBox();
-            this.lvwRevisions = new ListViewWithSubitemTooltips();
-            this.cbxPath = new System.Windows.Forms.ToolStripComboBox();
-            this.lblChanges = new System.Windows.Forms.ToolStripLabel();
+            this.rtbLeft = new CoyneSolutions.SpeeDiff.SynchronizedScrollRichTextBox();
+            this.rtbLeftNumbers = new CoyneSolutions.SpeeDiff.SynchronizedScrollRichTextBox();
+            this.rtbRight = new CoyneSolutions.SpeeDiff.SynchronizedScrollRichTextBox();
+            this.rtbRightNumbers = new CoyneSolutions.SpeeDiff.SynchronizedScrollRichTextBox();
+            this.lvwRevisions = new CoyneSolutions.SpeeDiff.ListViewWithSubitemTooltips();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btnFindText = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -81,8 +81,8 @@ namespace CoyneSolutions.SpeeDiff
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(944, 25);
-            this.toolStrip.TabStop = true;
             this.toolStrip.TabIndex = 0;
+            this.toolStrip.TabStop = true;
             this.toolStrip.Text = "toolStrip1";
             // 
             // toolStripLabel1
@@ -91,20 +91,15 @@ namespace CoyneSolutions.SpeeDiff
             this.toolStripLabel1.Size = new System.Drawing.Size(28, 22);
             this.toolStripLabel1.Text = "&File:";
             // 
+            // cbxPath
+            // 
+            this.cbxPath.Name = "cbxPath";
+            this.cbxPath.Size = new System.Drawing.Size(300, 25);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
-            // 
-            // btnUpRevision
-            // 
-            this.btnUpRevision.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.btnUpRevision.Image = ((System.Drawing.Image)(resources.GetObject("btnUpRevision.Image")));
-            this.btnUpRevision.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.btnUpRevision.Name = "btnUpRevision";
-            this.btnUpRevision.Size = new System.Drawing.Size(23, 22);
-            this.btnUpRevision.Text = "Go to Next Revision (Alt-Right)";
-            this.btnUpRevision.Click += new System.EventHandler(this.btnUpRevision_Click);
             // 
             // btnDownRevision
             // 
@@ -115,6 +110,16 @@ namespace CoyneSolutions.SpeeDiff
             this.btnDownRevision.Size = new System.Drawing.Size(23, 22);
             this.btnDownRevision.Text = "Go to Previous Revision (Alt-Left)";
             this.btnDownRevision.Click += new System.EventHandler(this.btnDownRevision_Click);
+            // 
+            // btnUpRevision
+            // 
+            this.btnUpRevision.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.btnUpRevision.Image = ((System.Drawing.Image)(resources.GetObject("btnUpRevision.Image")));
+            this.btnUpRevision.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.btnUpRevision.Name = "btnUpRevision";
+            this.btnUpRevision.Size = new System.Drawing.Size(23, 22);
+            this.btnUpRevision.Text = "Go to Next Revision (Alt-Right)";
+            this.btnUpRevision.Click += new System.EventHandler(this.btnUpRevision_Click);
             // 
             // toolStripSeparator2
             // 
@@ -140,6 +145,12 @@ namespace CoyneSolutions.SpeeDiff
             this.btnNextChange.Size = new System.Drawing.Size(23, 22);
             this.btnNextChange.Text = "Go to Next Change (Ctrl-Down)";
             this.btnNextChange.Click += new System.EventHandler(this.btnNextChange_Click);
+            // 
+            // lblChanges
+            // 
+            this.lblChanges.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.lblChanges.Name = "lblChanges";
+            this.lblChanges.Size = new System.Drawing.Size(0, 22);
             // 
             // splitContainer2
             // 
@@ -182,39 +193,49 @@ namespace CoyneSolutions.SpeeDiff
             // 
             // rtbLeft
             // 
+            this.rtbLeft.DisableScrollSync = false;
             this.rtbLeft.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLeft.Location = new System.Drawing.Point(71, 0);
+            this.rtbLeft.HideSelection = false;
+            this.rtbLeft.Location = new System.Drawing.Point(50, 0);
             this.rtbLeft.Name = "rtbLeft";
-            this.rtbLeft.Size = new System.Drawing.Size(402, 395);
+            this.rtbLeft.ShowScrollBars = true;
+            this.rtbLeft.Size = new System.Drawing.Size(423, 395);
             this.rtbLeft.TabIndex = 3;
             this.rtbLeft.Text = "";
-            this.rtbLeft.HideSelection = false;
             // 
             // rtbLeftNumbers
             // 
+            this.rtbLeftNumbers.DisableScrollSync = false;
             this.rtbLeftNumbers.Dock = System.Windows.Forms.DockStyle.Left;
             this.rtbLeftNumbers.Location = new System.Drawing.Point(0, 0);
             this.rtbLeftNumbers.Name = "rtbLeftNumbers";
+            this.rtbLeftNumbers.ShowScrollBars = true;
             this.rtbLeftNumbers.Size = new System.Drawing.Size(50, 395);
+            this.rtbLeftNumbers.TabIndex = 4;
             this.rtbLeftNumbers.TabStop = false;
             this.rtbLeftNumbers.Text = "";
-            this.rtbRight.HideSelection = false;
             // 
             // rtbRight
             // 
+            this.rtbRight.DisableScrollSync = false;
             this.rtbRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbRight.Location = new System.Drawing.Point(78, 0);
+            this.rtbRight.HideSelection = false;
+            this.rtbRight.Location = new System.Drawing.Point(50, 0);
             this.rtbRight.Name = "rtbRight";
-            this.rtbRight.Size = new System.Drawing.Size(389, 395);
+            this.rtbRight.ShowScrollBars = true;
+            this.rtbRight.Size = new System.Drawing.Size(417, 395);
             this.rtbRight.TabIndex = 4;
             this.rtbRight.Text = "";
             // 
             // rtbRightNumbers
             // 
+            this.rtbRightNumbers.DisableScrollSync = false;
             this.rtbRightNumbers.Dock = System.Windows.Forms.DockStyle.Left;
             this.rtbRightNumbers.Location = new System.Drawing.Point(0, 0);
             this.rtbRightNumbers.Name = "rtbRightNumbers";
+            this.rtbRightNumbers.ShowScrollBars = true;
             this.rtbRightNumbers.Size = new System.Drawing.Size(50, 395);
+            this.rtbRightNumbers.TabIndex = 5;
             this.rtbRightNumbers.TabStop = false;
             this.rtbRightNumbers.Text = "";
             // 
@@ -231,21 +252,10 @@ namespace CoyneSolutions.SpeeDiff
             this.lvwRevisions.View = System.Windows.Forms.View.Details;
             this.lvwRevisions.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvwRevisions_MouseClick);
             // 
-            // cbxPath
-            // 
-            this.cbxPath.Name = "cbxPath";
-            this.cbxPath.Size = new System.Drawing.Size(300, 25);
-            // 
             // contextMenuStrip
             // 
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(153, 26);
-            // 
-            // lblChanges
-            // 
-            this.lblChanges.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.lblChanges.Name = "lblChanges";
-            this.lblChanges.Size = new System.Drawing.Size(0, 22);
+            this.contextMenuStrip.Size = new System.Drawing.Size(61, 4);
             // 
             // btnFindText
             // 
