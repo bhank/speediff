@@ -41,7 +41,7 @@
 // DONE // Does hitting Enter on Browse when the dropdown is open not work?
 // DONE // Line number problem? Seen with SVN unicode resource file
 // Trap SVN-server-unreachable error
-// Enable dragging files into the window to load them
+// DONE // Enable dragging files into the window to load them
 // BugzID link
 // DONE // Widen dropdown
 // Show only the first line of the description in the listview, or else put a space between lines
@@ -52,7 +52,7 @@
 // Maybe add a dropdown in the Find box for recent searches
 // Maybe add a filter textbox for the revision list, like Tortoise
 // Somehow prevent imaginary lines from being copied to the clipboard... maybe handle WM_COPY?
-
+// Could ctrl-left and right stop between slashes in the file combobox?
 
 using System;
 using System.Windows.Forms;
