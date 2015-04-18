@@ -304,6 +304,7 @@ namespace CoyneSolutions.SpeeDiff
         private void frmDiff_Load(object sender, EventArgs e)
         {
             var settings = Properties.Settings.Default;
+            UpgradeSettingsIfNeeded(settings);
             LoadWindowPosition(settings);
             LoadMostRecentlyUsedFiles(settings);
             SetDropdownWidth();
@@ -311,6 +312,17 @@ namespace CoyneSolutions.SpeeDiff
             if (Environment.GetCommandLineArgs().Length > 1)
             {
                 LoadFile(Environment.GetCommandLineArgs()[1]);
+            }
+        }
+
+        // http://stackoverflow.com/questions/23924183/keep-users-settings-after-altering-assembly-file-version
+        private void UpgradeSettingsIfNeeded(Settings settings)
+        {
+            if (settings.SettingsNeedUpgrade)
+            {
+                settings.Upgrade();
+                settings.SettingsNeedUpgrade = false;
+                settings.Save();
             }
         }
 

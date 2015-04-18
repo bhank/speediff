@@ -86,5 +86,17 @@ namespace CoyneSolutions.SpeeDiff.Properties {
                 this["MostRecentlyUsedFiles"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SettingsNeedUpgrade {
+            get {
+                return ((bool)(this["SettingsNeedUpgrade"]));
+            }
+            set {
+                this["SettingsNeedUpgrade"] = value;
+            }
+        }
     }
 }
