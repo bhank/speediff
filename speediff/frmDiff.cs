@@ -707,6 +707,11 @@ namespace CoyneSolutions.SpeeDiff
             Text = string.Format("{0} - {1}", filename, formTitle);
 
             var revisions = await revisionProvider.LoadRevisions();
+            if (revisions.Count == 0)
+            {
+                MessageBox.Show("No revisions found.\n\n" + filename, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             lvwRevisions.Items.AddRange(revisions.Select((r, i) => new ListViewItem(new[]
             {
                 i.ToString(CultureInfo.InvariantCulture),
