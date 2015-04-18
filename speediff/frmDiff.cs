@@ -223,8 +223,18 @@ namespace CoyneSolutions.SpeeDiff
 
                 await Task.Run(() =>
                 {
-                    var process = Process.Start(program, parameters);
-                    process.WaitForExit();
+                    Process process;
+                    try
+                    {
+                        process = Process.Start(program, parameters);
+                        process.WaitForExit();
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show("An error occurred launching your external app.\n\n" + program + "\n\n" + e.Message, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    
                     if(File.Exists(leftFile)) File.Delete(leftFile);
                     if(File.Exists(rightFile)) File.Delete(rightFile);
                 });
