@@ -109,6 +109,28 @@ namespace CoyneSolutions.SpeeDiff
             Closing += frmDiff_Closing;
 
             SetUpContextMenu();
+
+            SetUpFileDragAndDrop();
+        }
+
+        private void SetUpFileDragAndDrop()
+        {
+            AllowDrop = true;
+            DragEnter += (sender, args) =>
+            {
+                if (args.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    args.Effect = DragDropEffects.Copy;
+                }
+            };
+            DragDrop += (sender, args) =>
+            {
+                var filenames = (string[]) args.Data.GetData(DataFormats.FileDrop);
+                if (filenames != null && filenames.Length > 0)
+                {
+                    LoadFile(filenames[0]);
+                }
+            };
         }
 
         private string GetVersion()
