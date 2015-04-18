@@ -12,9 +12,11 @@ Features:
 * TortoiseSVN Repo Browser, Log, Blame, and Diff (if installed)
 * Custom external app support (examples are in speediff.exe.config)
 
+See [the github page][2] for more information.
 
 -Adam Coyne <github@mail2.coyne.nu>
 
 ![Screenshot](https://github.com/bhank/speediff/raw/master/speediff-screenshot.png)
 
-[1]: https://code.google.com/p/svn-time-lapse-view/ "SVN Time Lapse View"
+[1]: https://code.google.com/p/svn-time-lapse-view/
+[2]: https://github.com/bhank/speediff
