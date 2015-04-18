@@ -5,7 +5,15 @@ speediff is a C# WinForms app that enables you to quickly compare past Git or SV
 
 It is inspired by [SVN Time Lapse View][1], a useful but long-abandoned Java application (which was in turn inspired by Perforce's time-lapse view).
 
--Adam Coyne
+Features:
+
+* Git and SVN support
+* Keyboard-friendly navigation
+* TortoiseSVN Repo Browser, Log, Blame, and Diff (if installed)
+* Custom external app support (examples are in speediff.exe.config)
+
+
+-Adam Coyne <github@mail2.coyne.nu>
 
 ![Screenshot](https://github.com/bhank/speediff/raw/master/speediff-screenshot.png)
 
