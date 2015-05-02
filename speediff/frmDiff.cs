@@ -677,6 +677,7 @@ namespace CoyneSolutions.SpeeDiff
 
         private async void LoadFile(string filename)
         {
+            Enabled = false;
             ChangeStartPositions.Clear();
             lvwRevisions.Items.Clear();
             foreach (var box in allTextBoxes)
@@ -691,6 +692,7 @@ namespace CoyneSolutions.SpeeDiff
             if (string.IsNullOrWhiteSpace(filename))
             {
                 BeginInvoke(new Action(() => cbxPath.Text = string.Empty)); // Need to invoke in case the combo box selection is changing, since in that case any text I set here will get overwritten.
+                Enabled = true;
                 return;
             }
 
@@ -707,6 +709,7 @@ namespace CoyneSolutions.SpeeDiff
             catch (ArgumentException)
             {
                 MessageBox.Show("Path is not in a Git or SVN repository.\n\n" + filename, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Enabled = true;
                 return;
             }
 
@@ -732,6 +735,7 @@ namespace CoyneSolutions.SpeeDiff
             if (revisions.Count == 0)
             {
                 MessageBox.Show("No revisions found.\n\n" + filename, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Enabled = true;
                 return;
             }
             lvwRevisions.Items.AddRange(revisions.Select((r, i) => new ListViewItem(new[]
@@ -749,6 +753,7 @@ namespace CoyneSolutions.SpeeDiff
             AddMostRecentlyUsedFilename(filename);
             loadedFileName = filename;
             rtbRight.Select();
+            Enabled = true;
         }
 
         // http://stackoverflow.com/questions/325931/getting-actual-file-name-with-proper-casing-on-windows-with-net
