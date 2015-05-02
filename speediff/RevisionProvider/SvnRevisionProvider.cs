@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using SharpSvn;
+using SharpSvn.UI;
 
 namespace CoyneSolutions.SpeeDiff
 {
@@ -11,6 +12,7 @@ namespace CoyneSolutions.SpeeDiff
         internal SvnRevisionProvider(string path)
         {
             Path = path;
+            SvnUI.Bind(svnClient, new SvnUIBindArgs());
         }
 
         private SvnClient svnClient = new SvnClient();
