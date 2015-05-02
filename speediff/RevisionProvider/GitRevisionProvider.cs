@@ -21,7 +21,7 @@ namespace CoyneSolutions.SpeeDiff
 
         public override async Task Initialize()
         {
-            await Task.Run(() => LoadRevisions(Path));
+            await LoadRevisions(Path);
         }
 
         public override async Task<IList<Revision>> LoadRevisions()
@@ -35,7 +35,7 @@ namespace CoyneSolutions.SpeeDiff
             get { return false; }
         }
 
-        private void LoadRevisions(string path)
+        private async Task LoadRevisions(string path)
         {
             Revisions = new List<Revision>();
 
