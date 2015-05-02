@@ -20,7 +20,7 @@
 // DONE // Shrink line number columns
 // DONE // Maybe ding when you try to go to the next/previous change when there is none, or the next/previous revision
 // Add binary release to github https://help.github.com/articles/creating-releases/
-// Deal with authentication?
+// DONE // Deal with authentication?
 // Limit revisions loaded, for speed?
 // DONE // Fix horizontal scroll sync to refresh properly -- and don't sync it to the line number textboxes
 // Maybe add a current-line-compare box at the bottom?
@@ -53,6 +53,11 @@
 // Maybe add a filter textbox for the revision list, like Tortoise
 // Somehow prevent imaginary lines from being copied to the clipboard... maybe handle WM_COPY?
 // Could ctrl-left and right stop between slashes in the file combobox?
+// Diff svn properties, rather than file contents? Maybe just one property? Need UI to specify properties and/or pick which... Maybe put " // " at the end of the url and the property name after that
+// Scroll position appears to sometimes not be synced after switching revisions
+// DONE // Crash on loading nonexistent SVN URL!
+// Add context menu in textbox?
+// Add auto-update; maybe show a link or button on the toolbar when a new version is available
 
 using System;
 using System.Windows.Forms;
