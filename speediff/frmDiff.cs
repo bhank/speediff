@@ -731,7 +731,17 @@ namespace CoyneSolutions.SpeeDiff
 
             Text = string.Format("{0} - {1}", filename, formTitle);
 
-            var revisions = await revisionProvider.LoadRevisions();
+            IList<Revision> revisions;
+            try
+            {
+                revisions = await revisionProvider.LoadRevisions();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("An error occurred loading revisions.\n\n" + filename + "\n\n" + e.Message, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Enabled = true;
+                return;
+            }
             if (revisions.Count == 0)
             {
                 MessageBox.Show("No revisions found.\n\n" + filename, formTitle, MessageBoxButtons.OK, MessageBoxIcon.Information);
